@@ -45,7 +45,7 @@ coreos:
         - name: 11-docker-opts.conf
           content: |
             [Service]
-            Environment="DOCKER_OPTS=--log-driver=journald --host 0.0.0.0:2375"
+            Environment="DOCKER_OPTS=--log-driver=journald --host 0.0.0.0:2375 --log-opt tag={{.ImageName}}"
 
     - name: flanneld.service
       drop-ins:
@@ -55,6 +55,49 @@ coreos:
             ExecStartPre=/opt/bin/decrypt-tls-assets
             Environment="ETCD_SSL_DIR=/etc/kubernetes/ssl"
             TimeoutStartSec=120
+    - name: splunk-forwarder.service
+      command: start
+      runtime: true
+      content: |
+        [Unit]
+        Description=Splunk forwarder
+        Wants=kubelet.service docker.service
+        After=kubelet.service
+        [Service]
+
+        Environment="DOCKER_FORWARDER_VERSION=v1.0.2"
+        Environment="DOCKER_LOGFILTER_VERSION=kube-version-0.3"
+        TimeoutStartSec=1200
+        # Change killmode from "control-group" to "none" to let Docker remove
+        # work correctly.
+        KillMode=none
+        ExecStartPre=-/bin/bash -c 'docker kill "$(docker ps -q --filter=name=%p-filter_)" > /dev/null 2>&1'
+        ExecStartPre=-/bin/bash -c 'docker kill "$(docker ps -q --filter=name=%p-http_)" > /dev/null 2>&1'
+        ExecStartPre=-/bin/bash -c 'docker rm "$(docker ps -q --filter=name=%p-filter_)" > /dev/null 2>&1'
+        ExecStartPre=-/bin/bash -c 'docker rm "$(docker ps -q --filter=name=%p-http_)" > /dev/null 2>&1'
+        ExecStartPre=/bin/bash -c 'docker history coco/coco-splunk-http-forwarder:$DOCKER_FORWARDER_VERSION >/dev/null 2>&1 \
+          || docker pull coco/coco-splunk-http-forwarder:$DOCKER_FORWARDER_VERSION'
+        ExecStartPre=/bin/bash -c 'docker history coco/coco-logfilter:$DOCKER_LOGFILTER_VERSION >/dev/null 2>&1 \
+          || docker pull coco/coco-logfilter:$DOCKER_LOGFILTER_VERSION'
+        ExecStart=/bin/sh -c '\
+          alias etcdctl_cmd="/usr/bin/etcdctl --ca-file=/etc/kubernetes/ssl/ca.pem --cert-file=/etc/kubernetes/ssl/etcd-client.pem --key-file=/etc/kubernetes/ssl/etcd-client-key.pem --endpoints={{ .EtcdEndpoints }}"; \
+          export FORWARD_URL=$(etcdctl_cmd get /ft/config/splunk-forwarder/splunk_hec_url); \
+          export TOKEN=$(etcdctl_cmd get /ft/config/splunk-forwarder/splunk_hec_token); \
+          BATCHSIZE=$(etcdctl_cmd get /ft/config/splunk-forwarder/batchsize  2>/dev/null) || BATCHSIZE=10; \
+          export ENV=$(etcdctl_cmd get /ft/config/environment_tag); \
+          journalctl -a -f --since=now --output=json \
+          | docker run -i --log-driver=none -e=ENV=$ENV --rm --name %p-filter_$(uuidgen) --memory="256m" coco/coco-logfilter:$DOCKER_LOGFILTER_VERSION \
+          | docker run -i --log-driver=none --rm --name %p-http_$(uuidgen) --memory="256m" -e="FORWARD_URL=$FORWARD_URL" -e="ENV=$ENV" -e="HOSTNAME=$(hostname -s)" -e="WORKERS=8" -e="BUFFER=256" -e="TOKEN=$TOKEN" -e="BATCHSIZE=$BATCHSIZE" -e="BATCHTIMER=5" coco/coco-splunk-http-forwarder:$DOCKER_FORWARDER_VERSION'
+
+        ExecStop=-/bin/bash -c 'docker stop -t 3 "$(docker ps -q --filter=name=%p-filter_)" && docker stop -t 3 "$(docker ps -q --filter=name=%p-http_)"'
+        Restart=on-failure
+        RestartSec=60
+
+        [Install]
+        WantedBy=multi-user.target
+
+        [X-Fleet]
+        Global=true
 
     - name: kubelet.service
       command: start
@@ -103,6 +146,7 @@ coreos:
         RestartSec=10
         [Install]
         WantedBy=multi-user.target
+
 
 {{ if eq .ContainerRuntime "rkt" }}
     - name: rkt-api.service
