@@ -48,6 +48,7 @@ coreos:
             {{with $x := "{{.ImageName}}"}}
             Environment="DOCKER_OPTS=--log-driver=journald --host 0.0.0.0:2375 --log-opt tag={{$x}}"
             {{end}}
+
     - name: flanneld.service
       drop-ins:
         - name: 10-etcd.conf
