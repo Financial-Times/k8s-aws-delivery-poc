@@ -46,6 +46,10 @@ spec:
             value: "1024m"
         ports:
         - containerPort: 7474
+        livenessProbe:
+          tcpSocket:
+            port: 7474
+          initialDelaySeconds: 30
         volumeMounts:
          - name: neo4j-red-persistent-storage
            mountPath: /data
@@ -67,6 +71,6 @@ spec:
   ports:
     - name: work
       port: 7474
-  clusterIP: None
+      targetPort: 7474
   selector:
     app: neo4j-red
