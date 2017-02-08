@@ -33,7 +33,7 @@ spec:
         livenessProbe:
           tcpSocket:
             port: 7474
-          initialDelaySeconds: 30
+          initialDelaySeconds: 5
         volumeMounts:
          - name: neo4j-red-persistent-storage
            mountPath: /data

@@ -29,6 +29,16 @@ spec:
 #            cpu: 1.1
         ports:
         - containerPort: 8080
+        livenessProbe:
+          initialDelaySeconds: 5
+          tcpSocket:
+            port: 8080
+        readinessProbe:
+          httpGet:
+            path: /__gtg
+            port: 8080
+          initialDelaySeconds: 20
+          periodSeconds: 30
 
 ---
 
@@ -39,6 +49,8 @@ metadata:
   labels:
     app: nativerw
     visualize: "true"
+    hasHealthcheck: "true"
+    healthcheckSeverity: warning
 spec:
   ports:
     - port: 8080

@@ -41,7 +41,7 @@ spec:
         livenessProbe:
           tcpSocket:
             port: 80
-          initialDelaySeconds: 4
+          initialDelaySeconds: 5
         volumeMounts:
         - name: varnish-htpasswd
           mountPath: /etc/varnish/auth

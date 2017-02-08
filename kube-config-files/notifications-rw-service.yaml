@@ -35,6 +35,10 @@ spec:
         ports:
         - containerPort: 8080
         - containerPort: 8081
+        livenessProbe:
+          initialDelaySeconds: 20
+          tcpSocket:
+            port: 8080
 
 ---
 
@@ -45,6 +49,8 @@ metadata:
   labels:
     app: notifications-rw
     visualize: "true"
+    hasHealthcheck: "true"
+    healthcheckSeverity: warning
 spec:
   ports:
     - port: 8080

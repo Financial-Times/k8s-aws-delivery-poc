@@ -23,7 +23,10 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 80
-
+        livenessProbe:
+          initialDelaySeconds: 5
+          tcpSocket:
+            port: 80
 ---
 
 kind: Service

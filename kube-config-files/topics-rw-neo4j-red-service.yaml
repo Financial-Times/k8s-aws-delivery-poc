@@ -28,7 +28,13 @@ spec:
         livenessProbe:
           tcpSocket:
             port: 8080
-          initialDelaySeconds: 4
+          initialDelaySeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /__gtg
+            port: 8080
+          initialDelaySeconds: 20
+          periodSeconds: 30
 
 ---
 
@@ -39,6 +45,8 @@ metadata:
   labels:
     app: topics-rw-neo4j-red
     visualize: "true"
+    hasHealthcheck: "true"
+    healthcheckSeverity: warning
 spec:
   ports:
     - name: work

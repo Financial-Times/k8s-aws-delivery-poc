@@ -46,7 +46,7 @@ spec:
         ports:
         - containerPort: 8080
         livenessProbe:
-          initialDelaySeconds: 10
+          initialDelaySeconds: 5
           tcpSocket:
             port: 8080
       volumes:
@@ -63,6 +63,8 @@ metadata:
   labels:
     app: cms-kafka-bridge-pub-xp
     visualize: "true"
+    hasHealthcheck: "true"
+    healthcheckSeverity: warning
 spec:
   ports:
     - port: 8080
