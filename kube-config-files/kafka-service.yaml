@@ -39,7 +39,7 @@ spec:
         ports:
         - containerPort: 9092
         livenessProbe:
-          initialDelaySeconds: 120
+          initialDelaySeconds: 5
           tcpSocket:
             port: 9092
         volumeMounts:
@@ -51,7 +51,7 @@ spec:
         ports:
         - containerPort: 2181
         livenessProbe:
-          initialDelaySeconds: 120
+          initialDelaySeconds: 5
           tcpSocket:
             port: 2181
         volumeMounts:
@@ -73,7 +73,7 @@ spec:
         ports:
         - containerPort: 8082
         livenessProbe:
-          initialDelaySeconds: 120
+          initialDelaySeconds: 5
           tcpSocket:
             port: 8082
       volumes:

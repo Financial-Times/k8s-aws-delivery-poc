@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: notifications-rw
-        image: up-registry.ft.com/coco/notifications-rw
+        image: up-registry.ft.com/coco/notifications-rw:v58
         env:
         - name: MONGO_ADDRESSES
           value: mongodb:27017
