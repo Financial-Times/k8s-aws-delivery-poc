@@ -24,7 +24,7 @@ spec:
         - name: JAVA_OPTS
           value: "-Xms128m -Xmx128m -XX:+UseG1GC -server"
         - name: DOCUMENT_STORE_HOST
-          value: document-store-api.default.svc.cluster.local:8080:8081
+          value: document-store-api:8080:8081
         - name: "CONTENT_PATH"
           value: content/
         - name: "CONTENT_HEALTHCHECK_PATH"
@@ -53,10 +53,10 @@ metadata:
 spec:
   ports:
     - port: 8080
-      name: "8080"
+      name: "serve"
       targetPort: 8080
     - port: 8081
-      name: "8081"
+      name: "admin"
       targetPort: 8081
   selector:
     app: content-public-read
