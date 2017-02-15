@@ -19,16 +19,14 @@ spec:
     spec:
       containers:
       - name: content-public-read
-        image: up-registry.ft.com/coco/content-public-read
+        image: up-registry.ft.com/coco/content-public-read:k8s_v0.0.1
         env:
         - name: JAVA_OPTS
           value: "-Xms128m -Xmx128m -XX:+UseG1GC -server"
-        - name: VULCAN_HOST
+        - name: DOCUMENT_STORE_HOST
           value: document-store-api.default.svc.cluster.local:8080:8081
         - name: "CONTENT_PATH"
           value: content/
-        - name: "HOST_HEADER"
-          value: document-store-api
         - name: "CONTENT_HEALTHCHECK_PATH"
           value: /__health
         - name: "API_HOST"
