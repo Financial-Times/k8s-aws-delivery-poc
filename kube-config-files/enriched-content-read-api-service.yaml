@@ -1,45 +1,36 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: content-public-read
+  name: enriched-content-read-api
   labels:
-    app: content-public-read
+    app: enriched-content-read-api
     visualize: "true"
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
-      app: content-public-read
+      app: enriched-content-read-api
   template:
     metadata:
       labels:
-        app: content-public-read
-        version: "latest"
+        app: enriched-content-read-api
         visualize: "true"
     spec:
       containers:
-      - name: content-public-read
-        image: up-registry.ft.com/coco/content-public-read:k8s_v0.0.1
-        imagePullPolicy: Always
+      - name: enriched-content-read-api
+        image: up-registry.ft.com/coco/enriched-content-read-api:k8s_v0.0.2
         env:
         - name: JAVA_OPTS
           value: "-Xms128m -Xmx128m -XX:+UseG1GC -server"
-        - name: DOCUMENT_STORE_HOST
-          value: document-store-api:8080:8081
-        - name: "CONTENT_PATH"
-          value: content/
-        - name: "CONTENT_HEALTHCHECK_PATH"
-          value: /__health
+        - name: CONTENT_API_HOST
+          value: content-public-read:8080
+        - name: ANNOTATIONS_API_HOST
+          value: public-annotations-api:8080
         - name: CACHE_TTL
           valueFrom:
             configMapKeyRef:
               name: global-config
               key: cache-max-age
-        - name: API_HOST
-          valueFrom:
-            configMapKeyRef:
-              name: global-config
-              key: api.host
         ports:
         - containerPort: 8080
         - containerPort: 8081
@@ -47,25 +38,31 @@ spec:
           initialDelaySeconds: 5
           tcpSocket:
             port: 8080
-
+# NO gtg endpoint exposed. Uncomment this when gtg is implemented.
+#        readinessProbe:
+#          httpGet: #
+#            path: "/__gtg"
+#            port: 8080
+#          initialDelaySeconds: 10
+#          periodSeconds: 30
 ---
 
 kind: Service
 apiVersion: v1
 metadata:
-  name: content-public-read
+  name: enriched-content-read-api
   labels:
-    app: content-public-read
+    app: enriched-content-read-api
     visualize: "true"
     hasHealthcheck: "true"
-    healthcheckSeverity: warning
+    healthcheckSeverity: "warning"
 spec:
   ports:
     - port: 8080
-      name: "serve"
+      name: "service"
       targetPort: 8080
     - port: 8081
       name: "admin"
       targetPort: 8081
   selector:
-    app: content-public-read
+    app: enriched-content-read-api

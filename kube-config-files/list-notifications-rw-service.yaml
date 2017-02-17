@@ -36,6 +36,11 @@ spec:
                 configMapKeyRef:
                   name: global-config
                   key: api.host
+            - name: CACHE_TTL
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: cache-max-age
           ports:
             - containerPort: 8080
           livenessProbe:

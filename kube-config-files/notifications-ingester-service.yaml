@@ -1,23 +1,23 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: content-ingester
+  name: notifications-ingester
   labels:
-    app: content-ingester
+    app: notifications-ingester
     visualize: "true"
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: content-ingester
+      app: notifications-ingester
   template:
     metadata:
       labels:
-        app: content-ingester
+        app: notifications-ingester
         visualize: "true"
     spec:
       containers:
-      - name: content-ingester
+      - name: notifications-ingester
         image: up-registry.ft.com/coco/ingester-k8s:v5
         resources:
             limits:
@@ -34,27 +34,25 @@ spec:
         - name: KAFKA_PORT
           value: "9092"
         - name: KAFKA_GROUPNAME
-          value: "content"
+          value: "notifications"
         - name: KAFKA_SYSTEM_ID
-          value: "ContentIngester"
+          value: "NotificationsIngester"
         - name: KAFKA_TOPIC_NAME
-          value: "CmsPublicationEvents"
-        - name: WHITELIST
-          value: "^http://(methode|wordpress|brightcove)(-article|-image-model|-list|-image|-video-model|-content-placeholder)?(-internal-components)?(-transformer|-mapper)(-pr|-iw)?(-uk-.*)?\\.svc\\.ft\\.com(:\\d{2,5})?/(content|image/model|image-set/model|lists|video/model|internalcomponents)/[\\w-]+.*$" 
-        - name: WRITER_NAME
-          value: "DocumentStore"
-        - name: WRITER_HEALTHCHECK_NAME
-          value: "Can connect to the Document Store"
-        - name: WRITER_HEALTHCHECK_TECH_SUMMARY
-          value: "Tests that the build-info endpoint for the Document Store returns a 200 response"
-        - name: MESSAGE_FORWARDING_ENABLED
-          value: "true"
-        - name: FORWARD_TO_TOPIC_NAME
           value: "PostPublicationEvents"
+        - name: WHITELIST
+          value: "^http://(methode|wordpress|brightcove)(-article|-video-model|-content-placeholder)?(-transformer|-mapper)(-pr|-iw)?(-uk-.*)?\\.svc\\.ft\\.com(:\\d{2,5})?/(content|video/model)/[\\w-]+.*$" 
+        - name: WRITER_NAME
+          value: "NotificationsReaderWriter"
+        - name: WRITER_HEALTHCHECK_NAME
+          value: "Can connect to the Notifications Reader/Writer"
+        - name: WRITER_HEALTHCHECK_TECH_SUMMARY
+          value: "Tests that the build-info endpoint for the Notifications Reader/Writer returns a 200 response"
+        - name: MESSAGE_FORWARDING_ENABLED
+          value: "false"
         - name: KAFKA_PROXY_URL
           value: "kafka:8082"
         - name: WRITER_URL
-          value: "document-store-api:8080"
+          value: "notifications-rw:8080"
         - name: ZOOKEEPER_HOST
           value: "kafka"
         - name: ZOOKEEPER_PORT
@@ -78,9 +76,9 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: content-ingester
+  name: notifications-ingester
   labels:
-    app: content-ingester
+    app: notifications-ingester
     visualize: "true"
     hasHealthcheck: "true"
     healthcheckSeverity: warning
@@ -94,4 +92,4 @@ spec:
       name: "admin"
       targetPort: 8081
   selector:
-    app: content-ingester
+    app: notifications-ingester

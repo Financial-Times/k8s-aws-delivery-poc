@@ -1,0 +1,67 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: public-annotations-api
+  labels:
+    app: public-annotations-api
+    visualize: "true"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: public-annotations-api
+  template:
+    metadata:
+      labels:
+        app: public-annotations-api
+        visualize: "true"
+    spec:
+      containers:
+      - name: public-annotations-api
+        image: coco/public-annotations-api:latest
+        resources:
+          limits:
+            memory: 256Mi
+        env:
+        - name: APP_PORT
+          value: "8080"
+        - name: GRAPHITE_ADDRESS
+          value: "graphite.ft.com:2003"
+        - name: GRAPHITE_PREFIX
+          value: "coco.services.k8s.public-annotations-api"
+        - name: LOG_METRICS
+          value: "false"
+        - name: CACHE_DURATION
+          value: "30s"
+        - name: NEO_URL
+          value: "http://neo4j-red:7474/db/data/"
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          initialDelaySeconds: 5
+          tcpSocket:
+            port: 8080
+        readinessProbe:
+          httpGet: #
+            path: "/__gtg"
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 30
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: public-annotations-api
+  labels:
+    app: public-annotations-api
+    visualize: "true"
+    hasHealthcheck: "true"
+    healthcheckSeverity: "warning"
+spec:
+  ports:
+    - port: 8080
+      name: "service"
+      targetPort: 8080
+  selector:
+    app: public-annotations-api

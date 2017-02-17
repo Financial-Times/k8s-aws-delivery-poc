@@ -1,0 +1,77 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: v1-content-annotator-brightcove-red-service
+  labels:
+    app: v1-content-annotator-brightcove-red-service
+    visualize: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: v1-content-annotator-brightcove-red-service
+  template:
+    metadata:
+      labels:
+        app: v1-content-annotator-brightcove-red-service
+        visualize: "true"
+    spec:
+      containers:
+      - name: v1-content-annotator-brightcove-red-service
+        image: up-registry.ft.com/coco/content-annotator-k8s:v2
+        imagePullPolicy: Always
+        livenessProbe:
+          initialDelaySeconds: 5
+          tcpSocket:
+            port: 8080
+# TODO enable this when a __gtg is added
+#        readinessProbe:
+#          httpGet:
+#            path: /__gtg
+#            port: 8080
+#          initialDelaySeconds: 10
+#          periodSeconds: 30
+        env:
+        - name: TOPIC
+          value: "ConceptSuggestions"
+        - name: GROUP_ID
+          value: "v1-content-annotator-brightcove-red-service-k8s"
+        - name: ZOOKEEPER_ENDPOINTS
+          value: "kafka:2181"
+        - name: KAFKA_ENDPOINTS
+          value: "kafka:9092"
+        - name: WRITER_ENDPOINT
+          value: "brightcove-annotations-rw-red:8080:8080"
+        - name: ANNOTATING_SYSTEM
+          value: "http://cmdb.ft.com/systems/brightcove"
+        - name: JAVA_OPTS
+          value: "-Xms128m -Xmx128m -XX:+UseG1GC -server"
+        - name: FILTER_NOVELTIES
+          value: "true"
+        - name: GRAPHITE_HOST
+          value: "graphite.ft.com"
+        - name: GRAPHITE_PORT
+          value: "2003"
+        - name: GRAPHITE_PREFIX
+          value: "coco.services.k8s-test.v1-content-annotator-brightcove-red-service"
+        ports:
+        - containerPort: 8080
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: v1-content-annotator-brightcove-red-service
+  labels:
+    app: v1-content-annotator-brightcove-red-service
+    visualize: "true"
+    hasHealthcheck: "true"
+    healthcheckSeverity: "critical"
+spec:
+  ports:
+    - port: 8080
+      name: "8080"
+      targetPort: 8080
+  selector:
+    app: v1-content-annotator-brightcove-red-service

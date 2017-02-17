@@ -19,6 +19,9 @@ spec:
       containers:
       - name: binary-ingester
         image: up-registry.ft.com/coco/ingester-k8s:v5
+        resources:
+            limits:
+              memory: 1Gi
         env:
         - name: JAVA_OPTS
           value: "-Xms256m -Xmx256m -XX:+UseG1GC -server"
@@ -89,7 +92,7 @@ spec:
       name: "8080"
       targetPort: 8080
     - port: 8081
-      name: "8081"
+      name: "admin"
       targetPort: 8081
   selector:
     app: binary-ingester

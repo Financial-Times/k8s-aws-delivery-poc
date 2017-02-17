@@ -9,4 +9,5 @@ data:
   aws.region: eu-west
   k8s.app_namespace: default
   aws.s3.image.binaries.bucket: com.ft.k8s-imagepublish
+  cache-max-age: "10"
 
