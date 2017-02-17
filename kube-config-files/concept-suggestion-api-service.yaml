@@ -1,0 +1,71 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: concept-suggestion-api
+  labels:
+    app: concept-suggestion-api
+    visualize: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: concept-suggestion-api
+  template:
+    metadata:
+      labels:
+        app: concept-suggestion-api
+        visualize: "true"
+    spec:
+      containers:
+      - name: concept-suggestion-api
+        image: up-registry.ft.com/coco/concept-suggestion-api:v29
+        env:
+        - name: JAVA_OPTS
+          value: "-Xms256m -Xmx256m -XX:+UseG1GC -server"
+        - name: CES_HOST
+          value: "ces-test.in.ft.com"
+        - name: CES_CREDENTIALS
+          valueFrom:
+            secretKeyRef:
+              name: global-secrets
+              key: ces.authorization_key
+        - name: CES_ENDPOINT
+          value: "/worker/extract"
+        - name: CES_PING
+          value: "/worker/admin/ping"
+        - name: KAFKA_ADDRESS
+          value: "kafka:8082"
+        - name: GRAPHITE_HOST
+          value: "graphite.ft.com"
+        - name: GRAPHITE_PORT
+          value: "2003"
+        - name: GRAPHITE_PREFIX
+          value: "coco.services.k8s.concept-suggestion-api"
+        - name: WHITELIST
+          value: "^http://(methode|wordpress)(-article)?(-transformer|-mapper)(-pr|-iw)?(-uk-.*)?\\.svc\\.ft\\.com(:\\d{2,5})?/(content)/[\\w-]+.*$"
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          initialDelaySeconds: 5
+          tcpSocket:
+            port: 8080
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: concept-suggestion-api
+  labels:
+    app: concept-suggestion-api
+    visualize: "true"
+    hasHealthcheck: "true"
+    healthcheckSeverity: warning
+
+spec:
+  ports:
+    - port: 8080
+      name: "8080"
+      targetPort: 8080
+  selector:
+    app: concept-suggestion-api

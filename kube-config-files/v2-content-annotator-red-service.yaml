@@ -1,0 +1,72 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: v2-content-annotator-red
+  labels:
+    app: v2-content-annotator-red
+    visualize: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: v2-content-annotator-red
+  template:
+    metadata:
+      labels:
+        app: v2-content-annotator-red
+        visualize: "true"
+    spec:
+      containers:
+      - name: v2-content-annotator-red
+        image: up-registry.ft.com/coco/content-annotator-k8s:v8
+        env:
+        - name: TOPIC
+          value: "ConceptSuggestions"
+        - name: GROUP_ID
+          value: "k8s-v2-annotator-red"
+        - name: ZOOKEEPER_ENDPOINTS
+          value: "kafka:2181"
+        - name: KAFKA_ENDPOINTS
+          value: "kafka:9092"
+        - name: WRITER_ENDPOINT
+          value: "v2-annotations-rw-red:8080:8080"
+        - name: ANNOTATING_SYSTEM
+          value: "concept-suggestor"
+        - name: GRAPHITE_HOST
+          value: "graphite.ft.com"
+        - name: JAVA_OPTS
+          value: "-Xms128m -Xmx128m -XX:+UseG1GC -server"
+        - name: FILTER_NOVELTIES
+          value: "true"
+        - name: GRAPHITE_PORT
+          value: "2003"
+        - name: GRAPHITE_PREFIX
+          value: "coco.services.k8s.v2-content-annotator-red"
+        - name: LOG_METRICS
+          value: "false"
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          initialDelaySeconds: 5
+          tcpSocket:
+            port: 8080
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: v2-content-annotator-red
+  labels:
+    app: v2-content-annotator-red
+    visualize: "true"
+    hasHealthcheck: "true"
+    healthcheckSeverity: warning
+
+spec:
+  ports:
+    - port: 8080
+      name: "8080"
+      targetPort: 8080
+  selector:
+    app: v2-content-annotator-red

@@ -1,0 +1,73 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: v2-annotations-rw-red
+  labels:
+    app: v2-annotations-rw-red
+    visualize: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: v2-annotations-rw-red
+  template:
+    metadata:
+      labels:
+        app: v2-annotations-rw-red
+        visualize: "true"
+    spec:
+      containers:
+      - name: v2-annotations-rw-red
+        image: coco/annotations-rw-neo4j:v1.0.0-rc1
+        resources:
+          limits:
+            memory: 256Mi
+        env:
+        - name: PLATFORM_VERSION
+          value: "v2"
+        - name: ANNOTATION_LIFECYCLE
+          value: "v2-annotations"
+        - name: NEO_URL
+          value: "http://neo4j-red:7474/db/data"
+        - name: APP_PORT
+          value: "8080"
+        - name: BATCH_SIZE
+          value: "50"
+        - name: GRAPHITE_ADDRESS
+          value: "graphite.ft.com:2003"
+        - name: GRAPHITE_PREFIX
+          value: "coco.services.k8s.v2-annotations-rw-red"
+        - name: LOG_METRICS
+          value: "false"
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          initialDelaySeconds: 5
+          tcpSocket:
+            port: 8080
+        readinessProbe:
+          httpGet:
+            path: /__gtg
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 30
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: v2-annotations-rw-red
+  labels:
+    app: v2-annotations-rw-red
+    visualize: "true"
+    hasHealthcheck: "true"
+    healthcheckSeverity: warning
+
+spec:
+  ports:
+    - port: 8080
+      name: "8080"
+      targetPort: 8080
+  selector:
+    app: v2-annotations-rw-red
