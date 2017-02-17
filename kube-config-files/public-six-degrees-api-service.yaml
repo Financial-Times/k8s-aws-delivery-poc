@@ -1,0 +1,65 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: public-six-degrees-api
+  labels:
+    app: public-six-degrees-api
+    visualize: "true"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: public-six-degrees-api
+  template:
+    metadata:
+      labels:
+        app: public-six-degrees-api
+        version: "latest"
+        visualize: "true"
+    spec:
+      containers:
+      - name: public-six-degrees-api
+        image: coco/public-six-degrees:1.0.0
+        imagePullPolicy: Always
+        env:
+        - name: NEO_URL
+          value: "http://neo4j-red:7474/db/data/"
+        - name: CACHE_DURATION
+          value: 24h
+        - name: GRAPHITE_ADDRESS
+          value: graphite.ft.com:2003
+        - name: GRAPHITE_PREFIX
+          value: coco.services.k8s.public-six-degrees-api
+        resources:
+          limits:
+            memory: 256Mi
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /__gtg
+            port: 8080
+          initialDelaySeconds: 20
+          periodSeconds: 30
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: public-six-degrees-api
+  labels:
+    app: public-six-degrees-api
+    visualize: "true"
+    hasHealthcheck: "true"
+spec:
+  ports:
+    - name: "app"
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: public-six-degrees-api
+
