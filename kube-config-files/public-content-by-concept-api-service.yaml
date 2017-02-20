@@ -14,7 +14,6 @@ spec:
     metadata:
       labels:
         app: public-content-by-concept-api
-        version: "latest"
         visualize: "true"
     spec:
       containers:
