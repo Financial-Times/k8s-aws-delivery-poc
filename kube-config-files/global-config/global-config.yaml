@@ -11,4 +11,6 @@ data:
   aws.s3.image.binaries.bucket: com.ft.k8s-imagepublish
   aws.s3.image.binaries.url: "http://com.ft.k8s-imagepublish.s3.amazonaws.com/"
   cache-max-age: "10"
+  methode.api_uri: https://methodeapi-test.ft.com/eom-file/
+  methode.health_uri: https://methodeapi-test.ft.com/build-info
 

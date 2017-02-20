@@ -1,0 +1,93 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: content-preview
+  labels:
+    app: content-preview
+    visualize: "true"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: content-preview
+  template:
+    metadata:
+      labels:
+        app: content-preview
+        visualize: "true"
+    spec:
+      containers:
+      - name: content-preview
+        image: coco/content-preview:k8s_v0.0.1
+        resources:
+          limits:
+            memory: 256Mi
+        env:
+        - name: APP_PORT
+          value: "8080"
+        - name: TRANSFORM_APP_URI
+          value: http://methode-article-mapper:8080/content-transform/
+        - name: TRANSFORM_APP_HEALTH_URI
+          value: http://methode-article-mapper:8080/__health
+        - name: TRANSFORM_APP_NAME
+          value: methode-article-mapper
+        - name: TRANSFORM_APP_PANIC_GUIDE
+          value: https://dewey.ft.com/up-mlm.html
+        - name: GRAPHITE_TCP_ADDRESS
+          value: graphite.ft.com:2003
+        - name: GRAPHITE_PREFIX
+          value: coco.services.k8s.content-preview
+        - name: SOURCE_APP_NAME
+          value: methode-api
+        - name: SOURCE_APP_URI
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: methode.api_uri
+        - name: SOURCE_APP_HEALTH_URI
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: methode.health_uri
+        - name: SOURCE_APP_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: global-secrets
+              key: methode.authorization_key
+        - name: SOURCE_APP_PANIC_GUIDE
+          value: https://sites.google.com/a/ft.com/dynamic-publishing-team/home/methode-api
+
+        ports:
+        - containerPort: 8080
+        - containerPort: 8081
+        livenessProbe:
+          initialDelaySeconds: 5
+          tcpSocket:
+            port: 8080
+        readinessProbe:
+          httpGet: #
+            path: "/__gtg"
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 30
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: content-preview
+  labels:
+    app: content-preview
+    visualize: "true"
+    hasHealthcheck: "true"
+    healthcheckSeverity: "warning"
+spec:
+  ports:
+    - port: 8080
+      name: "app"
+      targetPort: 8080
+    - port: 8081
+      name: "admin"
+      targetPort: 8081
+  selector:
+    app: content-preview
