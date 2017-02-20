@@ -1,0 +1,66 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: financial-instruments-rw-neo4j-red
+  labels:
+    app: financial-instruments-rw-neo4j-red
+    visualize: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: financial-instruments-rw-neo4j-red
+  template:
+    metadata:
+      labels:
+        app: financial-instruments-rw-neo4j-red
+        visualize: "true"
+    spec:
+      containers:
+      - name: financial-instruments-rw-neo4j-red
+        image: coco/financial-instruments-rw-neo4j:v0.0.2
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: 256Mi
+        env:
+        - name: APP_PORT
+          value: "8080"
+        - name: GRAPHITE_ADDRESS
+          value: "graphite.ft.com:2003"
+        - name: GRAPHITE_PREFIX
+          value: "coco.services.k8s.financial-instruments-rw-neo4j-red"
+        - name: BATCH_SIZE
+          value: "50"
+        - name: NEO_URL
+          value: "http://neo4j-red:7474/db/data/" 
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 10
+        readinessProbe:
+          httpGet:
+            path: "/__gtg"
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 30
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: financial-instruments-rw-neo4j-red
+  labels:
+    app: financial-instruments-rw-neo4j-red
+    visualize: "true"
+    hasHealthcheck: "true"
+spec:
+  ports:
+    - port: 8080
+      name: "app"
+      targetPort: 8080
+  selector:
+    app: financial-instruments-rw-neo4j-red
