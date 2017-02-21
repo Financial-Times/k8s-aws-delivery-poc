@@ -6,7 +6,7 @@ metadata:
     app: special-reports-rw-neo4j-red
     visualize: "true"
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: special-reports-rw-neo4j-red
