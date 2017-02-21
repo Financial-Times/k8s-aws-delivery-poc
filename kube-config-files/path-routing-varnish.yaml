@@ -14,7 +14,6 @@ spec:
     metadata:
       labels:
         app: path-routing-varnish
-        version: "latest"
         visualize: "true"
     spec:
       containers:

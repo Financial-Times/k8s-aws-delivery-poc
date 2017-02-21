@@ -14,7 +14,6 @@ spec:
     metadata:
       labels:
         app: cms-metadata-kafka-bridge-pub-pre-prod
-        version: "latest"
         visualize: "true"
     spec:
       containers:
