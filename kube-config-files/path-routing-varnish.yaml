@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: path-routing-varnish
-        image: coco/delivery-varnish:routing-test
+        image: coco/k8s-path-routing-varnish:v0.0.1
         imagePullPolicy: Always
         ports:
         - containerPort: 80
