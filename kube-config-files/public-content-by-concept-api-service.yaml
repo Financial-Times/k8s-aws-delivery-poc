@@ -51,9 +51,9 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: public-brands-api
+  name: public-content-by-concept-api
   labels:
-    app: public-brands-api
+    app: public-content-by-concept-api
     visualize: "true"
     hasHealthcheck: "true"
 spec:
