@@ -26,6 +26,11 @@ spec:
           value: "-Xms64m -Xmx64m -XX:+UseG1GC -server"
         - name: ARCHIVE_START_DATE
           value: "2006-02-09T02:00:42.999Z"
+        - name: API_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: api.host
         - name: CACHE_TTL
           valueFrom:
             configMapKeyRef:
