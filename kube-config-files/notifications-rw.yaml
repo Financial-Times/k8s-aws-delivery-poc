@@ -21,7 +21,7 @@ spec:
         image: up-registry.ft.com/coco/notifications-rw:vgtg_endpoint
         env:
         - name: MONGO_ADDRESSES
-          value: mongodb:27017
+          value: "mongodb-0.mongodb.default.svc.cluster.local:27017,mongodb-1.mongodb.default.svc.cluster.local:27017,mongodb-2.mongodb.default.svc.cluster.local:27017"
         - name: JAVA_OPTS
           value: "-Xms64m -Xmx64m -XX:+UseG1GC -server"
         - name: ARCHIVE_START_DATE

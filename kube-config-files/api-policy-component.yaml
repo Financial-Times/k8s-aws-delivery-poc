@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: api-policy-component
-        image: coco/api-policy-component:v63.0.1
+        image: coco/api-policy-component:k8s_v0.0.3
         env:
         - name: JAVA_OPTS
           value: "-Xms384m -Xmx384m -XX:+UseG1GC -server"
