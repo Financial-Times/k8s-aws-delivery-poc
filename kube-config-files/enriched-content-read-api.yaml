@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: enriched-content-read-api
-        image: up-registry.ft.com/coco/enriched-content-read-api:k8s_v0.0.2
+        image: up-registry.ft.com/coco/enriched-content-read-api:k8s_v2
         env:
         - name: JAVA_OPTS
           value: "-Xms128m -Xmx128m -XX:+UseG1GC -server"
@@ -38,13 +38,12 @@ spec:
           initialDelaySeconds: 5
           tcpSocket:
             port: 8080
-# NO gtg endpoint exposed. Uncomment this when gtg is implemented.
-#        readinessProbe:
-#          httpGet: #
-#            path: "/__gtg"
-#            port: 8080
-#          initialDelaySeconds: 10
-#          periodSeconds: 30
+        readinessProbe:
+          httpGet: 
+            path: "/__gtg"
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 30
 ---
 
 kind: Service

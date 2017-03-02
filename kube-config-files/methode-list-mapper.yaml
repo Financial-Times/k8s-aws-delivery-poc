@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name:  methode-list-mapper
-        image:  up-registry.ft.com/coco/methode-list-mapper:v9
+        image:  up-registry.ft.com/coco/methode-list-mapper:v10
         imagePullPolicy: Always
         resources:
           limits:
@@ -27,13 +27,12 @@ spec:
           initialDelaySeconds: 15
           tcpSocket:
             port: 8080
-# enable when MLM has a __gtg endpoint
-#        readinessProbe:
-#          httpGet:
-#            path: /__gtg
-#            port: 8080
-#          initialDelaySeconds: 30
-#          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /__gtg
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 30
         env:
         - name: DOCUMENT_STORE_API_URL
           value: "document-store-api:8080" 

@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: content-preview
-        image: coco/content-preview:k8s_v0.0.1
+        image: coco/content-preview:k8s_v0.0.2
         resources:
           limits:
             memory: 256Mi
@@ -64,13 +64,12 @@ spec:
           initialDelaySeconds: 5
           tcpSocket:
             port: 8080
-# NO gtg endpoint exposed. Uncomment this when gtg is implemented.
-#        readinessProbe:
-#          httpGet:
-#            path: "/__gtg"
-#            port: 8080
-#          initialDelaySeconds: 10
-#          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: "/__gtg"
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 30
 ---
 
 kind: Service

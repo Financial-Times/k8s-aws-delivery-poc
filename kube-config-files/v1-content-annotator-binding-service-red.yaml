@@ -18,19 +18,18 @@ spec:
     spec:
       containers:
       - name: v1-content-annotator-binding-service-red
-        image: up-registry.ft.com/coco/content-annotator-k8s:v8
+        image: up-registry.ft.com/coco/content-annotator-k8s:v9
         imagePullPolicy: Always
         livenessProbe:
           initialDelaySeconds: 5
           tcpSocket:
             port: 8080
-# TODO enable this when a __gtg is added
-#        readinessProbe:
-#          httpGet:
-#            path: /__gtg
-#            port: 8080
-#          initialDelaySeconds: 10
-#          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /__gtg
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 30
         env:
         - name: TOPIC
           value: "ConceptSuggestions"

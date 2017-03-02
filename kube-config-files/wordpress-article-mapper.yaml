@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: wordpress-article-mapper
-        image: coco/wordpress-article-mapper:rework-config
+        image: coco/wordpress-article-mapper:rework-config-rc2
         imagePullPolicy: Always
         env:
         - name: JAVA_OPTS
@@ -34,6 +34,12 @@ spec:
           initialDelaySeconds: 5
           tcpSocket:
             port: 8080
+        readinessProbe:
+          httpGet:
+            path: /__gtg
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 30
 
 ---
 

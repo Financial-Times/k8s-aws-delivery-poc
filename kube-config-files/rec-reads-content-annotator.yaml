@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: rec-reads-content-annotator
-        image: up-registry.ft.com/coco/content-annotator-k8s:v8
+        image: up-registry.ft.com/coco/content-annotator-k8s:v9
         env:
         - name: TOPIC
           value: "ConceptSuggestions"
@@ -48,6 +48,12 @@ spec:
           initialDelaySeconds: 5
           tcpSocket:
             port: 8080
+        readinessProbe:
+          httpGet:
+            path: /__gtg
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 30
 
 ---
 

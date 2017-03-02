@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: synthetic-image-publication-monitor
-        image:  coco/coco-synthetic-image-publication-monitor:kubernetes-version-rc2
+        image:  coco/coco-synthetic-image-publication-monitor:kubernetes-version-rc4
         imagePullPolicy: Always
         resources:
           limits:
@@ -40,13 +40,12 @@ spec:
           tcpSocket:
             port: 8080
           initialDelaySeconds: 10
-# At this time, gtg endpoint is not implemented. Enable the readinessProbe when this endpoint will be available.
-#        readinessProbe:
-#          httpGet:
-#            path: "/__gtg"
-#            port: 8080
-#          initialDelaySeconds: 15
-#          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: "/__gtg"
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 30
 
 ---
 
