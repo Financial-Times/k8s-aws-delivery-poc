@@ -1,19 +1,19 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: cms-metadata-kafka-bridge-pre-prod
+  name: cms-metadata-kafka-bridge-pub-pre-prod
   labels:
-    app: cms-metadata-kafka-bridge-pre-prod
+    app: cms-metadata-kafka-bridge-pub-pre-prod
     visualize: "true"
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: cms-metadata-kafka-bridge-pre-prod
+      app: cms-metadata-kafka-bridge-pub-pre-prod
   template:
     metadata:
       labels:
-        app: cms-metadata-kafka-bridge-pre-prod
+        app: cms-metadata-kafka-bridge-pub-pre-prod
         visualize: "true"
     spec:
       containers:
@@ -24,9 +24,9 @@ spec:
           name: certificates-storage
         env:
         - name: QUEUE_PROXY_ADDRS
-          value: "https://pre-prod-uk-up.ft.com/__kafka-rest-proxy"
+          value: "https://pub-pre-prod-uk-up.ft.com/__kafka-rest-proxy"
         - name: GROUP_ID
-          value: "k8s-metadata-kafka-bridge-pre-prod"
+          value: "k8s-metadata-kafka-bridge-pub-pre-prod-1"
         - name: CONSUMER_AUTOCOMMIT_ENABLE
           value: "true"
         - name: TOPIC
@@ -40,8 +40,8 @@ spec:
         - name: AUTHORIZATION_KEY
           valueFrom:
             secretKeyRef:
-              name: delivery-auth
-              key: pre-prod-uk
+              name: pub-auth
+              key: pub-pre-prod-auth
         ports:
         - containerPort: 8080
         livenessProbe:
@@ -64,16 +64,16 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: cms-metadata-kafka-bridge-pre-prod
+  name: cms-metadata-kafka-bridge-pub-pre-prod
   labels:
-    app: cms-metadata-kafka-bridge-pre-prod
+    app: cms-metadata-kafka-bridge-pub-pre-prod
     visualize: "true"
     hasHealthcheck: "true"
 spec:
   ports:
     - port: 8080
-      name: "cms-metadata-kafka-bridge-pre-prod"
+      name: "cms-metadata-kafka-bridge-pub-pre-prod"
       targetPort: 8080
   selector:
-    app: cms-metadata-kafka-bridge-pre-prod
+    app: cms-metadata-kafka-bridge-pub-pre-prod
 
