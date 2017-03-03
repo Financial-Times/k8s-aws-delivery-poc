@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: cms-metadata-kafka-bridge-pre-prod
-        image:  coco/coco-kafka-bridge:remove-host-based-routing
+        image:  coco/coco-kafka-bridge:remove-host-based-routing-rc2
         volumeMounts:
         - mountPath: /etc/ssl/certs
           name: certificates-storage
@@ -48,6 +48,12 @@ spec:
           initialDelaySeconds: 5
           tcpSocket:
             port: 8080
+        readinessProbe:
+          httpGet:
+            path: /__gtg
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 30
       volumes:
       - name: certificates-storage
         hostPath:

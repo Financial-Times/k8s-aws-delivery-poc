@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: aggregate-healthcheck
-        image: coco/upp-aggregate-healthcheck:v1.0.0-rc27
+        image: coco/upp-aggregate-healthcheck:v1.0.0-rc28
         imagePullPolicy: Always
         resources:
           limits:

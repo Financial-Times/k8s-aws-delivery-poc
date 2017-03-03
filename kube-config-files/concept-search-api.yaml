@@ -1,0 +1,80 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: concept-search-api
+  labels:
+    app: concept-search-api
+    visualize: "true"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: concept-search-api
+  template:
+    metadata:
+      labels:
+        app: concept-search-api
+        visualize: "true"
+    spec:
+      containers:
+      - name: concept-search-api
+        image: coco/concept-search-api:v1.0.7
+        imagePullPolicy: Always
+        env:
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: global-secrets
+              key: aws.access_key_id
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: global-secrets
+              key: aws.secret_access_key
+        - name: ELASTICSEARCH_ENDPOINT
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: aws.elasticsearch.endpoint
+        - name: ELASTICSEARCH_REGION
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: aws.region
+        - name: ELASTICSEARCH_INDEX
+          value: "concept"
+        - name: RESULT_LIMIT
+          value: "50"
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          initialDelaySeconds: 5
+          tcpSocket:
+            port: 8080
+        # The gtg will return 503 because the elasticsearch cluster status is yellow. 
+        # The elasticsearch cluster will be yellow as long as it's configured to use only one node.
+        # The readiness probe can be enabled when using a proper cluster configuration.
+        # readinessProbe:
+        #   httpGet:
+        #     path: /__gtg
+        #     port: 8080
+        #   initialDelaySeconds: 10
+        #   periodSeconds: 30
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: concept-search-api
+  labels:
+    app: concept-search-api
+    visualize: "true"
+    hasHealthcheck: "true"
+spec:
+  ports:
+    - port: 8080
+      name: "8080"
+      targetPort: 8080
+  selector:
+    app: concept-search-api

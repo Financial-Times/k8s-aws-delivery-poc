@@ -1,0 +1,9 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: load-replicator-config
+  namespace: default
+data:
+  rates: "content:4;lists:2;enrichedcontent:2;notifications:1;brands:1;organisations:1;people:1;things:1;concordances:1"
+  notfications-date: "2017-02-14T00:00:00.000Z"
+  environment: "k8s-test"

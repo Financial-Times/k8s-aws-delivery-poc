@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: concept-suggestion-api
-        image: up-registry.ft.com/coco/concept-suggestion-api:v29
+        image: up-registry.ft.com/coco/concept-suggestion-api:v2-rc
         env:
         - name: JAVA_OPTS
           value: "-Xms256m -Xmx256m -XX:+UseG1GC -server"
@@ -49,6 +49,12 @@ spec:
           initialDelaySeconds: 5
           tcpSocket:
             port: 8080
+        readinessProbe:
+          httpGet:
+            path: /__gtg
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 30
 
 ---
 

@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: content-public-read
-        image: up-registry.ft.com/coco/content-public-read:k8s_v0.0.1
+        image: up-registry.ft.com/coco/content-public-read:k8s-v3
         imagePullPolicy: Always
         env:
         - name: JAVA_OPTS
@@ -45,6 +45,12 @@ spec:
           initialDelaySeconds: 5
           tcpSocket:
             port: 8080
+        readinessProbe:
+          httpGet:
+            path: /__gtg
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 30
 
 ---
 

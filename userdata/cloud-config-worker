@@ -321,6 +321,13 @@ coreos:
 {{end}}
 
 write_files:
+  - path: /etc/systemd/journald.conf.d/10-override-config.conf
+    content: |
+      [Journal]
+      MaxLevelConsole=crit
+      Compress=false
+      RateLimitInterval=0
+      RateLimitBurst=0
   - path: /etc/kubernetes/cni/docker_opts_cni.env
     content: |
       DOCKER_OPT_BIP=""
