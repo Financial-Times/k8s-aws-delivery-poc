@@ -1,0 +1,51 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: diamond
+  labels:
+    app: diamond
+    visualize: "true"
+spec:
+  selector:
+    matchLabels:
+      app: diamond
+  template:
+    metadata:
+      labels:
+        app: diamond
+        visualize: "true"
+    spec:
+      containers:
+      - name: diamond
+        image: coco/coco-diamond-auto:k8s_v0.0.1
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: host-docker-sock
+          mountPath: /var/run/docker.sock
+        - name: host-docker-proc
+          mountPath: /host_proc
+        env:
+        - name: GRAPHITE_HOST
+          value: graphite.ft.com
+        - name: GRAPHITE_PORT
+          value: "2003"
+        - name: INTERVAL
+          value: "60"
+        - name: PREFIX
+          value: "coco.servers"
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: environment
+      volumes:
+      - name: host-docker-sock
+        hostPath:
+          path: /var/run/docker.sock
+      - name: host-docker-proc
+        hostPath:
+          path: /proc

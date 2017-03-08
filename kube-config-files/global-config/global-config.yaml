@@ -15,3 +15,4 @@ data:
   cache-max-age: "10"
   methode.api_uri: https://methodeapi-test.ft.com/eom-file/
   methode.health_uri: https://methodeapi-test.ft.com/build-info
+  environment: "k8s-test"

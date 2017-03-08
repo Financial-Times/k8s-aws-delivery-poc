@@ -42,7 +42,7 @@ spec:
         - name: ENVIRONMENT
           valueFrom:
             configMapKeyRef:
-              name: load-replicator-config
+              name: global-config
               key: environment
         - name: DURATION
           value: "0" 
