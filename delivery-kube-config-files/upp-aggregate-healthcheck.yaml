@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: aggregate-healthcheck
-        image: coco/upp-aggregate-healthcheck:v1.0.0-rc31
+        image: coco/upp-aggregate-healthcheck:v1.1.1-rc5
         imagePullPolicy: Always
         resources:
           limits:
@@ -27,6 +27,11 @@ spec:
         env:
         - name: PATH_PREFIX
           value: "/__health"
+        - name: GRAPHITE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: graphite.address
         ports:
         - containerPort: 8080
         livenessProbe:
@@ -62,7 +67,7 @@ items:
          healthcheck-categories-for: aggregate-healthcheck
     data:
       category.name: default
-      category.refreshrate: "5"
+      category.refreshrate: "60"
       category.issticky: "false"
   - kind: ConfigMap
     apiVersion: v1
@@ -73,7 +78,7 @@ items:
     data:
       category.name: publish
       category.services: content-ingester, topics-rw
-      category.refreshrate: "6"
+      category.refreshrate: "60"
       category.issticky: "false"
   - kind: ConfigMap
     apiVersion: v1
@@ -84,7 +89,7 @@ items:
     data:
       category.name: content-read
       category.services: api-policy-component,content-public-read,document-store-api
-      category.refreshrate: "7"
+      category.refreshrate: "60"
       category.issticky: "false"
       category.enabled: "true"
   - kind: ConfigMap
@@ -96,9 +101,9 @@ items:
     data:
       category.name: image-publish
       category.services: content-ingester,binary-writer
-      category.refreshrate: "7"
+      category.refreshrate: "60"
       category.issticky: "false"
-      category.enabled: "false"
+      category.enabled: "true"
 
 ---
 
