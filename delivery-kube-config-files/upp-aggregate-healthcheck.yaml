@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: aggregate-healthcheck
-        image: coco/upp-aggregate-healthcheck:v1.1.1-rc5
+        image: coco/upp-aggregate-healthcheck:v1.1.1-rc6
         imagePullPolicy: Always
         resources:
           limits:
@@ -72,12 +72,12 @@ items:
   - kind: ConfigMap
     apiVersion: v1
     metadata:
-      name: category.publish
+      name: category.content-publish
       labels: 
         healthcheck-categories-for: aggregate-healthcheck
     data:
-      category.name: publish
-      category.services: content-ingester, topics-rw
+      category.name: content-publish
+      category.services: cms-kafka-bridge-pub-pre-prod,cms-notifier,content-ingester,document-store-api,methode-article-internal-components-mapper,methode-article-mapper,methode-content-collection-mapper,methode-content-placeholder-mapper,methode-image-binary-mapper,methode-image-set-mapper,video-mapper,wordpress-article-mapper,wordpress-image-mapper
       category.refreshrate: "60"
       category.issticky: "false"
   - kind: ConfigMap
@@ -85,26 +85,100 @@ items:
     metadata:
       name: category.content-read
       labels: 
-         healthcheck-categories-for: aggregate-healthcheck
+        healthcheck-categories-for: aggregate-healthcheck
     data:
       category.name: content-read
-      category.services: api-policy-component,content-public-read,document-store-api
+      category.services: api-policy-component,content-public-read,document-store-api,system-healthcheck
       category.refreshrate: "60"
-      category.issticky: "false"
-      category.enabled: "true"
+      category.issticky: "false"	  
+  - kind: ConfigMap
+    apiVersion: v1
+    metadata:
+      name: category.internalcontent-read
+      labels: 
+        healthcheck-categories-for: aggregate-healthcheck
+    data:
+      category.name: internalcontent-read
+      category.services: api-policy-component,content-public-read,document-store-api,system-healthcheck,enriched-content-read-api,internal-content-api,public-annotations-api,relations-api
+      category.refreshrate: "60"
+      category.issticky: "false"	 
+  - kind: ConfigMap
+    apiVersion: v1
+    metadata:
+      name: category.lists-publish
+      labels: 
+        healthcheck-categories-for: aggregate-healthcheck
+    data:
+      category.name: lists-publish
+      category.services: cms-kafka-bridge-pub-pre-prod,cms-notifier,content-ingester,document-store-api,methode-list-mapper,public-concordances-api,public-things-api,system-healthcheck
+      category.refreshrate: "60"
+      category.issticky: "false"	 	  
+  - kind: ConfigMap
+    apiVersion: v1
+    metadata:
+      name: category.read
+      labels: 
+        healthcheck-categories-for: aggregate-healthcheck
+    data:
+      category.name: read
+      category.services: api-policy-component,concept-rw-elasticsearch,content-preview,content-public-read,content-public-read-preview,document-store-api,enriched-content-read-api,internal-components-preview,internal-content-api,internal-content-preview-api,list-notifications-rw,notifications-rw,public-brands-api,public-concordances-api,public-content-by-concept-api,public-organisations-api,public-people-api,public-six-degrees-api,public-things-api
+      category.refreshrate: "60"
+      category.issticky: "false"	 	
+  - kind: ConfigMap
+    apiVersion: v1
+    metadata:
+      name: category.concordances-read
+      labels: 
+        healthcheck-categories-for: aggregate-healthcheck
+    data:
+      category.name: concordances-read
+      category.services: api-policy-component,public-concordances-api,system-healthcheck
+      category.refreshrate: "60"
+      category.issticky: "false"	 	
+  - kind: ConfigMap
+    apiVersion: v1
+    metadata:
+      name: category.enrichedcontent-read
+      labels: 
+        healthcheck-categories-for: aggregate-healthcheck
+    data:
+      category.name: enrichedcontent-read
+      category.services: api-policy-component,content-public-read,document-store-api,enriched-content-read-api,public-annotations-api,relations-api,system-healthcheck
+      category.refreshrate: "60"
+      category.issticky: "false"	 	
   - kind: ConfigMap
     apiVersion: v1
     metadata:
       name: category.image-publish
       labels: 
-         healthcheck-categories-for: aggregate-healthcheck
+        healthcheck-categories-for: aggregate-healthcheck
     data:
       category.name: image-publish
-      category.services: content-ingester,binary-writer
+      category.services: binary-ingester,binary-writer,cms-kafka-bridge-pub-pre-prod,cms-notifier,content-ingester,document-store-api,methode-image-binary-mapper,methode-image-model-mapper,methode-image-set-mapper,synthetic-image-publication-monitor,system-healthcheck
       category.refreshrate: "60"
-      category.issticky: "false"
-      category.enabled: "true"
-
+      category.issticky: "false"	 	
+  - kind: ConfigMap
+    apiVersion: v1
+    metadata:
+      name: category.lists-read
+      labels: 
+        healthcheck-categories-for: aggregate-healthcheck
+    data:
+      category.name: lists-read
+      category.services: api-policy-component,document-store-api,system-healthcheck
+      category.refreshrate: "60"
+      category.issticky: "false"	 	
+  - kind: ConfigMap
+    apiVersion: v1
+    metadata:
+      name: category.system
+      labels: 
+        healthcheck-categories-for: aggregate-healthcheck
+    data:
+      category.name: system
+      category.services: system-healthcheck
+      category.refreshrate: "60"
+      category.issticky: "false"	 		  
 ---
 
 kind: ConfigMap

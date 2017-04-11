@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: aggregate-healthcheck
-        image: coco/upp-aggregate-healthcheck:v1.1.1-rc5
+        image: coco/upp-aggregate-healthcheck:v1.1.1-rc6
         imagePullPolicy: Always
         resources:
           limits:
@@ -111,17 +111,6 @@ items:
       category.name: system
       category.services: coreos-version-checker, system-healthcheck
       category.refreshrate: "60"
-  - kind: ConfigMap
-    apiVersion: v1
-    metadata:
-      name: category.essential-publish
-      labels: 
-         healthcheck-categories-for: aggregate-healthcheck
-    data:
-      category.name: essential-publish
-      category.services: cms-notifier, native-ingester-cms, nativerw, wordpress-notifier
-      category.refreshrate: "60"
-      category.issticky: "true"
 ---
 
 kind: ConfigMap
