@@ -1,0 +1,57 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: nativerw
+  labels:
+    app: nativerw
+    visualize: "true"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nativerw
+  template:
+    metadata:
+      labels:
+        app: nativerw
+        visualize: "true"
+    spec:
+      containers:
+      - name: nativerw
+        image: coco/nativerw:2.0.2-k8s-adjust-gtg-rc1
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: 256Mi
+        env:
+        - name: MONGOS
+          value: mongodb-0.mongodb.default.svc.cluster.local:27017,mongodb-1.mongodb.default.svc.cluster.local:27017,mongodb-2.mongodb.default.svc.cluster.local:27017
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          initialDelaySeconds: 5
+          tcpSocket:
+            port: 8080
+        readinessProbe:
+          httpGet:
+            path: /__gtg
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 30
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: nativerw
+  labels:
+    app: nativerw
+    visualize: "true"
+    hasHealthcheck: "true"
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: nativerw

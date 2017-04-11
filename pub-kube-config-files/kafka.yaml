@@ -79,7 +79,7 @@ spec:
       volumes:
        - name: kafka-persistent-storage
          awsElasticBlockStore:
-           volumeID: vol-0da5c6a7e25e8f799
+           volumeID: vol-08c03b4fbf5192bc3
            fsType: ext4
 
 ---

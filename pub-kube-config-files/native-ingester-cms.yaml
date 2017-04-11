@@ -1,0 +1,77 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: native-ingester-cms
+  labels:
+    app: native-ingester-cms
+    visualize: "true"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: native-ingester-cms
+  template:
+    metadata:
+      labels:
+        app: native-ingester-cms
+        visualize: "true"
+    spec:
+      containers:
+      - name: native-ingester-cms
+        image: coco/native-ingester:2.0.4-k8-remove-host-routing-rc1
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: 256Mi
+        env:
+        - name: Q_READ_ADDR
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: kafka.proxy.url.with.protocol
+        - name: Q_READ_GROUP
+          value: nativeIngesterCms
+        - name: Q_READ_TOPIC
+          value: PreNativeCmsPublicationEvents
+        - name: NATIVE_CONTENT_UUID_FIELDS
+          value: uuid,post.uuid,data.uuidv3
+        - name: NATIVE_RW_ADDRESS
+          value: http://nativerw:8080
+        - name: NATIVE_RW_COLLECTIONS_BY_ORIGINS
+          value: "{\"http://cmdb.ft.com/systems/methode-web-pub\": \"methode\", \"http://cmdb.ft.com/systems/wordpress\": \"wordpress\", \"http://cmdb.ft.com/systems/brightcove\": \"brightcove\"}"
+        - name: Q_WRITE_ADDR
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: kafka.proxy.url.with.protocol
+        - name: Q_WRITE_TOPIC
+          value: NativeCmsPublicationEvents
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          initialDelaySeconds: 5
+          tcpSocket:
+            port: 8080
+        readinessProbe:
+          httpGet:
+            path: /__gtg
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 30
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: native-ingester-cms
+  labels:
+    app: native-ingester-cms
+    visualize: "true"
+    hasHealthcheck: "true"
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: native-ingester-cms

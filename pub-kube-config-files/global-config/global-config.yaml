@@ -6,7 +6,6 @@ metadata:
 data:
   mongodb.address: mongodb:27017
   api.host: test.api.ft.com
-  aws.region: eu-west
   k8s.app_namespace: default
   aws.s3.image.binaries.bucket: com.ft.k8s-imagepublish
   aws.s3.image.binaries.url: "http://com.ft.k8s-imagepublish.s3.amazonaws.com/"
@@ -15,7 +14,7 @@ data:
   cache-max-age: "10"
   methode.api_uri: https://methodeapi-test.ft.com/eom-file/
   methode.health_uri: https://methodeapi-test.ft.com/build-info
-  environment: "k8s-publishing-upp-uk"
+  environment: "upp-k8s-publishing-test-eu"
   graphite.address: "graphite.ft.com:2003"
   graphite.host: graphite.ft.com
   graphite.port: "2003"

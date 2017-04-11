@@ -17,9 +17,9 @@ spec:
   - ReadWriteOnce
   awsElasticBlockStore:
     fsType: ext4
-    volumeID: aws://eu-west-1a/vol-07588a32680f04754
+    volumeID: aws://eu-west-1a/vol-012c639211734f1c5
   capacity:
-    storage: 50Gi
+    storage: 10Gi
   claimRef:
     apiVersion: v1
     kind: PersistentVolumeClaim
@@ -44,9 +44,9 @@ spec:
   - ReadWriteOnce
   awsElasticBlockStore:
     fsType: ext4
-    volumeID: aws://eu-west-1b/vol-01bdcc6868572a9f0
+    volumeID: aws://eu-west-1b/vol-0d6c4ac346082d640
   capacity:
-    storage: 50Gi
+    storage: 10Gi
   claimRef:
     apiVersion: v1
     kind: PersistentVolumeClaim
@@ -71,9 +71,9 @@ spec:
   - ReadWriteOnce
   awsElasticBlockStore:
     fsType: ext4
-    volumeID: aws://eu-west-1c/vol-09a468d6ddf26cc9c
+    volumeID: aws://eu-west-1c/vol-0a4b5d7543ecd647d
   capacity:
-    storage: 50Gi
+    storage: 10Gi
   claimRef:
     apiVersion: v1
     kind: PersistentVolumeClaim
@@ -134,3 +134,14 @@ spec:
         volumeMounts:
         - name: mongo-persistent
           mountPath: /data/db
+# This is needed in order for the stateful set to create persistent volume claims that will tie to the predefined persistent volumes
+  volumeClaimTemplates:
+  - metadata:
+      name: mongo-persistent
+      annotations:
+        volume.alpha.kubernetes.io/storage-class: standard
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 10Gi

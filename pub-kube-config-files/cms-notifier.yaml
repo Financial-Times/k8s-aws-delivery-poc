@@ -1,0 +1,73 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: cms-notifier
+  labels:
+    app: cms-notifier
+    visualize: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cms-notifier
+  template:
+    metadata:
+      labels:
+        app: cms-notifier
+        visualize: "true"
+    spec:
+      containers:
+      - name: cms-notifier
+        image: up-registry.ft.com/coco/cms-notifier:v44
+        imagePullPolicy: Always
+        env:
+        - name: JAVA_OPTS
+          value: "-Xms544m -Xmx544m -XX:+UseG1GC -server"
+        - name: KAFKA_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: kafka.host
+        - name: KAFKA_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: kafka.port
+        - name: KAFKA_TOPIC
+          value: "PreNativeCmsPublicationEvents"
+        - name: RESPECT_EXISTING_TIMESTAMP
+          value: "false"
+        ports:
+        - containerPort: 8080
+        - containerPort: 8081
+        livenessProbe:
+          initialDelaySeconds: 5
+          tcpSocket:
+            port: 8080
+        readinessProbe:
+          httpGet:
+            path: /__gtg
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 30
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: cms-notifier
+  labels:
+    app: cms-notifier
+    visualize: "true"
+    hasHealthcheck: "true"
+spec:
+  ports:
+    - port: 8080
+      name: "app"
+      targetPort: 8080
+    - port: 8081
+      name: "admin"
+      targetPort: 8081
+  selector:
+    app: cms-notifier

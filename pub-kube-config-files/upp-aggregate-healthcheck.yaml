@@ -28,7 +28,10 @@ spec:
         - name: PATH_PREFIX
           value: "/__health"
         - name: ENVIRONMENT
-          value: "k8s-publishing-upp-uk"
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: environment
         - name: GRAPHITE_URL
           valueFrom:
             configMapKeyRef:
@@ -65,8 +68,8 @@ items:
     apiVersion: v1
     metadata:
       name: category.default
-      labels: 
-         healthcheck-categories-for: aggregate-healthcheck
+      labels:
+        healthcheck-categories-for: aggregate-healthcheck
     data:
       category.name: default
       category.refreshrate: "5"
@@ -74,7 +77,7 @@ items:
     apiVersion: v1
     metadata:
       name: category.publish
-      labels: 
+      labels:
         healthcheck-categories-for: aggregate-healthcheck
     data:
       category.name: publish
@@ -85,27 +88,17 @@ items:
     apiVersion: v1
     metadata:
       name: category.publishing-monitors
-      labels: 
+      labels:
          healthcheck-categories-for: aggregate-healthcheck
     data:
       category.name: publishing-monitors
-      category.services: 
+      category.services: publish-availability-monitor, synthetic-article-publication-monitor, synthetic-list-publication-monitor
       category.refreshrate: "60"
   - kind: ConfigMap
     apiVersion: v1
     metadata:
-      name: category.read
-      labels: 
-         healthcheck-categories-for: aggregate-healthcheck
-    data:
-      category.name: read
-      category.services: publish-availability-monitor, synthetic-article-publication-monitor, synthetic-list-publication-monitor
-      category.refreshrate: "4"
-  - kind: ConfigMap
-    apiVersion: v1
-    metadata:
       name: category.system
-      labels: 
+      labels:
          healthcheck-categories-for: aggregate-healthcheck
     data:
       category.name: system
