@@ -80,28 +80,8 @@ spec:
     name: mongo-persistent-mongodb-2
     namespace: default
   persistentVolumeReclaimPolicy: Retain
----
-# A headless service to create DNS records
-apiVersion: v1
-kind: Service
-metadata:
-  name: mongodb
-  labels:
-    app: mongodb
-    visualize: "true"
-spec:
-  ports:
-  - name: work
-    port: 27017
-    targetPort: 27017
-  - name: admin
-    port: 28017
-    targetPort: 28017
-  clusterIP: None
-  selector:
-    app: mongodb
 
-# The mongo petset definition
+# The mongo StatefulSet definition
 ---
 apiVersion: apps/v1beta1
 kind: StatefulSet
@@ -144,3 +124,24 @@ spec:
       resources:
         requests:
           storage: 50Gi
+
+---
+# A headless service to create DNS records
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb
+  labels:
+    app: mongodb
+    visualize: "true"
+spec:
+  ports:
+  - name: work
+    port: 27017
+    targetPort: 27017
+  - name: admin
+    port: 28017
+    targetPort: 28017
+  clusterIP: None
+  selector:
+    app: mongodb
