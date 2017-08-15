@@ -1,0 +1,7 @@
+
+apiVersion: v1
+data:
+  proxy-set-headers: default/custom-headers
+kind: ConfigMap
+metadata:
+  name: nginx-config
