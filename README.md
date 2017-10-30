@@ -8,7 +8,32 @@ This repository contains the files needed to run the delivery cluster
 using Kubernetes on AWS.
 
 It uses [kube-aws](https://coreos.com/kubernetes/docs/latest/kubernetes-on-aws.html) for provisioning the cluster on AWS.
+
+## Building the Docker image
+The k8s provisioner can be built locally as a Docker image:
+
+```
+docker build -t k8s-provisioner:local .
+```
+
 ##  Provisioning a new cluster
+
+```
+## Set the environments variables to provision a cluster. The variables are stored in LastPass
+## For PAC Cluster
+## LastPass: pac-content-provisioner env variables
+## For UPP Cluster
+## LastPass: infraprod-coco-aws-provisioning-keys
+
+docker run \
+    -v $(pwd)/credentials:/provisioner-configs/credentials \
+    -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
+    -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
+    -e "CLUSTER=$CLUSTER" \
+    -e "KONSTRUCTOR_API_KEY=$KONSTRUCTOR_API_KEY" \
+    k8s-provisioner:local /bin/sh provision.sh
+```
+
 Follow the steps in [here](https://docs.google.com/document/d/1TTih1gcj-Vsqjp1aCAzsP4lpt6ivR8jDIXaZtBxNaUU/edit?pli=1#heading=h.idonu4gksr10) 
 
 ## Prerequisites for development
