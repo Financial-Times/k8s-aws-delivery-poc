@@ -93,6 +93,9 @@
     - include: tasks/provision/publishing.yaml
       when: (cluster_environment | lower == "publish")
 
+    - include: tasks/provision/neo4j.yaml
+      when: (cluster_environment | lower == "neo4j")
+
     - name: Create an S3 bucket for Splunk logs
       s3_bucket:
         aws_access_key: "{{ aws_access_key }}"
