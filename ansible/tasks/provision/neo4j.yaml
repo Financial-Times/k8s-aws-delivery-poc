@@ -3,6 +3,7 @@
 # Provision an EFS instance for Neo4j backup
 - name: EFS instance for Neo4j backup
   efs:
+    name: "{{ stack_name }}-neo4j-backup"
     state: present
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
@@ -38,11 +39,11 @@
   register: ec2_vol_neo4j
 
 
-# File System  and Volume ID's for Neo4j and backup which needs to be added in the global config
+# File System and Volume IDs for Neo4j and backup which needs to be added in the global config
 
 - name: EBS volume details for Neo4j
   debug:
-    msg: "EBS Volume ID for delivery Kafka: '{{ ec2_vol_neo4j.volume_id }}'"
+    msg: "EBS Volume ID for Neo4j: '{{ ec2_vol_neo4j.volume_id }}'"
 
 - name: EFS details for Neo4j backup
   debug:
