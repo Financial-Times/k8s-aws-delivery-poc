@@ -19,32 +19,8 @@
       systemCode: "{{ platform }}"
   register: efs_neo4j_backup
 
-- name: Provision a persistent volume for Neo4j
-  ec2_vol:
-    aws_access_key: "{{ aws_access_key }}"
-    aws_secret_key: "{{ aws_secret_key }}"
-    region: "{{ region }}"
-    zone: "{{ item }}"
-    name: "{{ stack_name }}-neo4j-{{ item }}"
-    volume_size: 100
-    volume_type: gp2
-    tags:
-      environment: "{{ environment_type }}"
-      teamDL: "universal.publishing.platform@ft.com"
-      systemCode: "{{ platform }}"
-  with_items: 
-    - "{{ region }}a"
-    - "{{ region }}b"
-    - "{{ region }}c"
-  register: ec2_vol_neo4j
-
 
 # File System and Volume IDs for Neo4j and backup which needs to be added in the global config
-
-- name: EBS volume details for Neo4j
-  debug:
-    msg: "EBS Volume ID for Neo4j: '{{ ec2_vol_neo4j.volume_id }}'"
-
 - name: EFS details for Neo4j backup
   debug:
     msg: "EFS File System ID: '{{ efs_neo4j_backup.efs.file_system_id }}'"
