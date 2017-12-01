@@ -1,26 +1,46 @@
 ---
-
-# Provision an EFS instance for Neo4j backup
-- name: EFS instance for Neo4j backup
-  efs:
-    name: "{{ stack_name }}-neo4j-backup"
-    state: present
+- name: Provision a persistent volume for Neo4j
+  ec2_vol:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
     region: "{{ region }}"
-    targets: 
-      - {subnet_id: "{{ private_subnet_zone_a }}", security_groups: [ "{{ efs_access_sg }}" ]}
-      - {subnet_id: "{{ private_subnet_zone_b }}", security_groups: [ "{{ efs_access_sg }}" ]}
-      - {subnet_id: "{{ private_subnet_zone_c }}", security_groups: [ "{{ efs_access_sg }}" ]}
+    zone: "{{ item }}"
+    name: "{{ stack_name }}-mongo-{{ item }}"
+    volume_size: 100
+    volume_type: gp2
     tags:
-      Name: "{{ stack_name }}-neo4j-backup"
       environment: "{{ environment_type }}"
       teamDL: "universal.publishing.platform@ft.com"
       systemCode: "{{ platform }}"
-  register: efs_neo4j_backup
+  with_items: 
+    - "{{ region }}a"
+    - "{{ region }}b"
+    - "{{ region }}c"
+  register: ec2_vol_neo4j
+
+- name: Provision a persistent volume for Neo4j Backup
+  ec2_vol:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ region }}"
+    zone: "{{ item }}"
+    name: "{{ stack_name }}-mongo-{{ item }}"
+    volume_size: 100
+    volume_type: gp2
+    tags:
+      environment: "{{ environment_type }}"
+      teamDL: "universal.publishing.platform@ft.com"
+      systemCode: "{{ platform }}"
+  with_items: 
+    - "{{ region }}a"
+  register: ec2_vol_neo4j_backup
 
 
 # File System and Volume IDs for Neo4j and backup which needs to be added in the global config
-- name: EFS details for Neo4j backup
+- name: EBS details for Neo4j
   debug:
-    msg: "EFS File System ID: '{{ efs_neo4j_backup.efs.file_system_id }}'"
+    msg: "EBS Volume IDs for Neo4j: '{{ ec2_vol_neo4j.volume_id }}'"
+
+- name: EBS details for Neo4j backup
+  debug:
+    msg: "EBS Volume ID for Neo4j backup: '{{ ec2_vol_neo4j_backup.volume_id }}'"
