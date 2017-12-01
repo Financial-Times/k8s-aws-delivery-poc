@@ -6,7 +6,7 @@
     region: "{{ region }}"
     zone: "{{ region }}a"
     name: "{{ stack_name }}-kafka"
-    volume_size: 10
+    volume_size: 50
     volume_type: gp2
     tags:
       environment: "{{ environment_type }}"
