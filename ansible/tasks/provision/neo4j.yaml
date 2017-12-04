@@ -5,7 +5,7 @@
     aws_secret_key: "{{ aws_secret_key }}"
     region: "{{ region }}"
     zone: "{{ item }}"
-    name: "{{ stack_name }}-mongo-{{ item }}"
+    name: "{{ stack_name }}-neo4j-{{ item }}"
     volume_size: 100
     volume_type: gp2
     tags:
@@ -23,24 +23,30 @@
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
     region: "{{ region }}"
-    zone: "{{ item }}"
-    name: "{{ stack_name }}-mongo-{{ item }}"
+    zone: "{{ region }}a"
+    name: "{{ stack_name }}-neo4j-backup-{{ region }}a"
     volume_size: 100
     volume_type: gp2
     tags:
       environment: "{{ environment_type }}"
       teamDL: "universal.publishing.platform@ft.com"
       systemCode: "{{ platform }}"
-  with_items: 
-    - "{{ region }}a"
   register: ec2_vol_neo4j_backup
 
+- name: Setup vol names
+  set_fact:
+    volume_info: []
 
-# File System and Volume IDs for Neo4j and backup which needs to be added in the global config
-- name: EBS details for Neo4j
+# File System and Volume IDs for Neo4j and backup which needs to be added in the config
+- name: Build EBS details for Neo4j
+  set_fact:
+    volume_info: "{{ volume_info }} + [ '{{ item.volume.zone}} => {{ item.volume_id }}' ]"
+  with_items: "{{ ec2_vol_neo4j.results }}"
+
+- name: EBS details for Neo4j volumes
   debug:
-    msg: "EBS Volume IDs for Neo4j: '{{ ec2_vol_neo4j.volume_id }}'"
+    msg: "{{ volume_info }}"
 
 - name: EBS details for Neo4j backup
   debug:
-    msg: "EBS Volume ID for Neo4j backup: '{{ ec2_vol_neo4j_backup.volume_id }}'"
+    msg: "EBS Volume for Neo4j backup: {{ ec2_vol_neo4j_backup.volume.zone}} => {{ ec2_vol_neo4j_backup.volume_id }}"
