@@ -3,6 +3,7 @@
 - name: EFS instance for transformers cache
   efs:
     state: present
+    name: "{{ stack_name }}-transformers-cache"
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
     region: "{{ region }}"
@@ -21,6 +22,7 @@
 - name: EFS instance for factset uploader
   efs:
     state: present
+    name: "{{ stack_name }}-factset-uploader"
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
     region: "{{ region }}"
@@ -70,6 +72,15 @@
   register: ec2_vol_pub_mongo
 
 # File System  and Volume ID's for Kafka and Mongo which needs to be added in the global config
+- name: Setup vol names
+  set_fact:
+    mongo_volume_info: []
+
+- name: Build EBS details for Mongo
+  set_fact:
+    mongo_volume_info: "{{ mongo_volume_info }} + [ '{{ item.volume.zone}} => {{ item.volume_id }}' ]"
+  with_items: "{{ ec2_vol_pub_mongo.results }}"
+
 - name: EFS File System ID for Transformers Cache
   debug:
     msg: "EFS File System ID: '{{ efs_instance_trans_cache.efs.file_system_id }}'"
@@ -84,4 +95,4 @@
 
 - name: EBS volume details for mongo
   debug:
-    msg: "EBS Volume ID for Mongo: '{{ ec2_vol_pub_mongo.volume_id }}'"
+    msg: "{{ mongo_volume_info }}"

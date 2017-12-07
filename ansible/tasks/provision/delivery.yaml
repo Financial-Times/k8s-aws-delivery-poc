@@ -84,6 +84,14 @@
     policy: "{{ lookup('file','templates/generic-rw-s3.json') }}"
 
 # File System  and Volume ID's for Kafka and Mongo which needs to be added in the global config
+- name: Setup vol names
+  set_fact:
+    mongo_volume_info: []
+
+- name: Build EBS details for Mongo
+  set_fact:
+    mongo_volume_info: "{{ mongo_volume_info }} + [ '{{ item.volume.zone}} => {{ item.volume_id }}' ]"
+  with_items: "{{ ec2_vol_del_mongo.results }}"
 
 - name: EBS volume details for Kafka
   debug:
@@ -91,4 +99,4 @@
 
 - name: EBS volume details for Mongo
   debug:
-    msg: "EBS Volume ID for delivery Mongo: '{{ ec2_vol_del_mongo.volume_id }}'"
+    msg: "{{ mongo_volume_info }}"

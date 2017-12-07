@@ -57,7 +57,7 @@
       when: (cluster_environment | lower == "publish")
 
     - name: Delete persistent volume for kafka
-      script: /bin/bash /delete_volumes.sh
+      script: /bin/bash /delete-volumes.sh
       environment:
         AWS_REGION: "{{ region }}"
         AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
@@ -66,7 +66,7 @@
       when: (cluster_environment | lower == "publish" or cluster_environment | lower == "delivery")
 
     - name: Delete persistent volume for mongo
-      script: /bin/bash /delete_volumes.sh
+      script: /bin/bash /delete-volumes.sh
       environment:
         AWS_REGION: "{{ region }}"
         AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
