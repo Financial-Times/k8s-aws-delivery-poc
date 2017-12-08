@@ -74,6 +74,15 @@
         VOLUME_NAME: "{{ stack_name }}-mongo"
       when: (cluster_environment | lower == "publish" or cluster_environment | lower == "delivery")
 
+    - name: Delete persistent volume for Neo4j
+      script: /bin/bash /delete-volumes.sh
+      environment:
+        AWS_REGION: "{{ region }}"
+        AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
+        AWS_SECRET_ACCESS_KEY: "{{ aws_secret_key }}"
+        VOLUME_NAME: "{{ stack_name }}-neo4j"
+      when: (cluster_environment | lower == "neo4j")
+
     - name: Delete the S3 bucket for Image Publish and generic RW
       s3_bucket:
         aws_access_key: "{{ aws_access_key }}"
