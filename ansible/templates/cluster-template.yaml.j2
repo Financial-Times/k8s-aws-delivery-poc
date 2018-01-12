@@ -66,7 +66,7 @@ apiEndpoints:
     # the controller nodes SG to allow inbound traffic from the VPC CIDR to port 443 TCP, see:
     # http://docs.aws.amazon.com/elasticloadbalancing/latest/network/target-group-register-targets.html
     # Must be omitted when `id` is specified
-    #type: classic
+    type: network
 
     # TTL in seconds for the Route53 RecordSet created if hostedZone.id is set to a non-nil value.
     #recordSetTTL: 300
@@ -94,10 +94,10 @@ apiEndpoints:
 
 #    # Existing security groups attached to this load balancer which are typically used to
 #    # allow Kubernetes API accesses from admins and/or CD systems when `apiAccessAllowedSourceCIDRs` are explicitly set to an empty array
-    # todo [customize] per account & region
-    # The group id of aws-composer-custom-k8s-api-internal-access-sg*
-    securityGroupIds:
-    - {{ api_private_access_sg }}
+#    Security groups are not supported by NLBs. Moved the security groups directly to the worker nodes, as recommended by https://docs.aws.amazon.com/elasticloadbalancing/latest/network/target-group-register-targets.html#target-security-groups
+#    securityGroupIds:
+#    - {{ api_private_access_sg }}
+
 #
 #  #
 #  # Common configuration #1: Unversioned, internet-facing API endpoint
@@ -185,6 +185,10 @@ controller:
     # allow SSH from internal VPC machines. Group name "Internal SSH security group"
     # todo [customize] per account & region
     - {{ vpc_internal_ssh_sg }}
+    # Allow access from internal VPNs to the API server
+    # The group id of aws-composer-custom-k8s-api-internal-access-sg*
+    - {{ api_private_access_sg }}
+
 #
 #  # Auto Scaling Group definition for controllers. If only `controllerCount` is specified, min and max will be the set to that value and `rollingUpdateMinInstancesInService` will be one less.
 #  autoScalingGroup:

@@ -20,4 +20,16 @@ for elbs in $(aws elb describe-load-balancers --query LoadBalancerDescriptions[*
     done
 done
 
+# if ELB not found yet search also for network load balancers
+if [ -z "$ELB_NAME" ]; then
+  for nlbArn in $(aws elbv2 describe-load-balancers --query LoadBalancers[*].LoadBalancerArn --region=${AWS_REGION} --output text); do
+      for tag in $(aws elbv2 describe-tags --resource-arns ${nlbArn} --region=${AWS_REGION} --query TagDescriptions[*].Tags[].Value --output text); do
+          if [ "$tag" == "$CLUSTER_NAME" ]; then
+              ELB_NAME=$(aws elbv2 describe-load-balancers --load-balancer-arns ${nlbArn} --query LoadBalancers[*].DNSName --region=${AWS_REGION} --output text)
+              break
+          fi
+      done
+  done
+fi
+
 echo -n $ELB_NAME
