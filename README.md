@@ -120,8 +120,10 @@ the cluster was initially provisioned in the /credentials folder. Failure in doi
 ## For UPP Cluster
 ## LastPass: UPP - k8s Cluster Provisioning env variables
 
+## Build the docker image again so that the credentials gets baked into the docker image
+docker build -t k8s-provisioner:local .
+
 docker run \
-    -v $(pwd)/credentials:/ansible/credentials \
     -e "AWS_REGION=$AWS_REGION" \
     -e "CLUSTER_NAME=$CLUSTER_NAME" \
     -e "CLUSTER_ENVIRONMENT=$CLUSTER_ENVIRONMENT" \
