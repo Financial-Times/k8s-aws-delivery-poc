@@ -52,6 +52,7 @@ Here are the steps for provisioning a new cluster:
         -e "CLUSTER_ENVIRONMENT=$CLUSTER_ENVIRONMENT" \
         -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
         -e "KONSTRUCTOR_API_KEY=$KONSTRUCTOR_API_KEY" \
+        -e "OIDC_ISSUER_URL=$OIDC_ISSUER_URL" \
         -e "SHARE_CLUSTER_CREDENTIALS=$SHARE_CLUSTER_CREDENTIALS" \
         -e "PLATFORM=$PLATFORM" \
         -e "VAULT_PASS=$VAULT_PASS" \
