@@ -7,7 +7,6 @@
   vars_files:
     - vars/defaults.yaml
     - vars/account_configs/{{ environment_type }}-{{ aws_region }}.yaml
-    - vaults/{{ platform }}/vault_{{ environment_type }}.yaml
 
   # Include the environment specific cluster variables
   pre_tasks:
@@ -44,6 +43,7 @@
     - include: tasks/delete_cname.yaml
       vars:
         dns_cname: "{{ stack_name }}-api"
+        konstructor_api_key: "{{ konstructor_api_key }}"
 
     - name: Decom an EFS instances (Transformers cache and Factset reader)
       efs:
