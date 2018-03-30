@@ -132,6 +132,7 @@ docker run \
     -e "CLUSTER_NAME=$CLUSTER_NAME" \
     -e "CLUSTER_ENVIRONMENT=$CLUSTER_ENVIRONMENT" \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
+    -e "OIDC_ISSUER_URL=$OIDC_ISSUER_URL" \
     -e "PLATFORM=$PLATFORM" \
     -e "VAULT_PASS=$VAULT_PASS" \
     k8s-provisioner:local /bin/bash update.sh
