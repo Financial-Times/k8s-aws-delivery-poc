@@ -6,7 +6,7 @@ clusterName: {{ stack_name }}
 
 # CoreOS release channel to use. Currently supported options: alpha, beta, stable
 # See coreos.com/releases for more information
-releaseChannel: {{ coreos_release_channel}}
+releaseChannel: {{ coreos_release_channel }}
 
 # The AMI ID of CoreOS.
 # If omitted, the latest AMI for the releaseChannel is used.
@@ -1597,10 +1597,10 @@ experimental:
   # For using Dex as a custom OIDC provider, please check "contrib/dex/README.md".
   # WARNING: always use "https" for "issuerUrl", otherwise the Kubernetes API server will not start correctly.
   oidc:
-    enabled: false
-    issuerUrl: "https://accounts.google.com"
-    clientId: "kubernetes"
-    usernameClaim: "email"
+    enabled: true
+    issuerUrl: {{ oidc_issuer_url }}
+    clientId: "kubectl-login"
+    usernameClaim: "name"
     groupsClaim: "groups"
 
   # When set to true this configures the k8s aws provider so that it doesn't modify every node's security group

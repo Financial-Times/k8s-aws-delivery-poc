@@ -51,6 +51,8 @@ Here are the steps for provisioning a new cluster:
         -e "CLUSTER_NAME=$CLUSTER_NAME" \
         -e "CLUSTER_ENVIRONMENT=$CLUSTER_ENVIRONMENT" \
         -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
+        -e "KONSTRUCTOR_API_KEY=$KONSTRUCTOR_API_KEY" \
+        -e "OIDC_ISSUER_URL=$OIDC_ISSUER_URL" \
         -e "SHARE_CLUSTER_CREDENTIALS=$SHARE_CLUSTER_CREDENTIALS" \
         -e "PLATFORM=$PLATFORM" \
         -e "VAULT_PASS=$VAULT_PASS" \
@@ -130,6 +132,7 @@ docker run \
     -e "CLUSTER_NAME=$CLUSTER_NAME" \
     -e "CLUSTER_ENVIRONMENT=$CLUSTER_ENVIRONMENT" \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
+    -e "OIDC_ISSUER_URL=$OIDC_ISSUER_URL" \
     -e "PLATFORM=$PLATFORM" \
     -e "VAULT_PASS=$VAULT_PASS" \
     k8s-provisioner:local /bin/bash update.sh
@@ -209,6 +212,7 @@ docker run \
     -e "CLUSTER_NAME=$CLUSTER_NAME" \
     -e "CLUSTER_ENVIRONMENT=$CLUSTER_ENVIRONMENT" \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
+    -e "KONSTRUCTOR_API_KEY=$KONSTRUCTOR_API_KEY" \
     -e "PLATFORM=$PLATFORM" \
     -e "VAULT_PASS=$VAULT_PASS" \
     k8s-provisioner:local /bin/bash decom.sh

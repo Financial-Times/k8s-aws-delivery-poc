@@ -7,7 +7,6 @@
   vars_files:
     - vars/defaults.yaml
     - vars/account_configs/{{ environment_type }}-{{ aws_region }}.yaml
-    - vaults/{{ platform }}/vault_{{ environment_type }}.yaml
 
   # Include the environment specific cluster variables
   pre_tasks:
@@ -87,6 +86,7 @@
       vars:
         dns_cname: "{{ stack_name }}-api"
         hostname: "{{ api_server_elb.stdout }}"
+        konstructor_api_key: "{{ konstructor_api_key }}"
         
     - include: tasks/provision/delivery.yaml
       when: (cluster_environment | lower == "delivery")
