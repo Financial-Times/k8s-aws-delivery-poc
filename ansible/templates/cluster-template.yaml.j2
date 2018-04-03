@@ -1598,7 +1598,7 @@ experimental:
   # WARNING: always use "https" for "issuerUrl", otherwise the Kubernetes API server will not start correctly.
   oidc:
     enabled: true
-    issuerUrl: {{ oidc_issuerurl }}
+    issuerUrl: {{ oidc_issuer_url }}
     clientId: "kubectl-login"
     usernameClaim: "name"
     groupsClaim: "groups"
