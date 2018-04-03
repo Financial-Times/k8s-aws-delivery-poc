@@ -11,5 +11,5 @@ aws_secret_access_key=${AWS_SECRET_ACCESS_KEY} \
 cluster_name=${CLUSTER_NAME} \
 platform=${PLATFORM} \
 cluster_environment=${CLUSTER_ENVIRONMENT} \
-oidc_issuerurl=${OIDC_ISSUER_URL} \
+oidc_issuer_url=${OIDC_ISSUER_URL} \
 environment_type=${ENVIRONMENT_TYPE} "
