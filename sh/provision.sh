@@ -12,6 +12,6 @@ cluster_name=${CLUSTER_NAME} \
 cluster_environment=${CLUSTER_ENVIRONMENT} \
 environment_type=${ENVIRONMENT_TYPE} \
 konstructor_api_key=${KONSTRUCTOR_API_KEY} \
-oidc_issuerurl=${OIDC_ISSUER_URL} \
+oidc_issuer_url=${OIDC_ISSUER_URL} \
 platform=${PLATFORM} \
 share_cluster_credentials=${SHARE_CLUSTER_CREDENTIALS} "
