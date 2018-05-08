@@ -92,7 +92,7 @@ persistentvolumeclaimsCreate() { # PersistentVolumeClaims should be status=Bound
 main() {
     # Define the resources to restore in order.
     RESTORATION_ORDER=( storageclasses persistentvolumes ) # clusterrolebindings clusterroles
-    RESTORATION_ORDER_NS=( persistentvolumeclaims configmaps endpoints ingresses jobs limitranges networkpolicies
+    RESTORATION_ORDER_NS=( persistentvolumeclaims configmaps endpoints ingresses jobs cronjobs limitranges networkpolicies
                         podsecuritypolicies podtemplates resourcequotas secrets serviceaccounts services thirdpartyresources
                         horizontalpodautoscalers pods replicasets replicationcontrollers daemonsets deployments statefulsets
                         poddisruptionbudgets roles rolebindings)
@@ -159,4 +159,3 @@ TEMP_DIR=$(mktemp -d)
 trap "rm -f -r ${TEMP_DIR}" EXIT
 
 main "${@:-}"
-
