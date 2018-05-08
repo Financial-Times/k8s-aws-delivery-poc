@@ -1196,7 +1196,7 @@ write_files:
                           )])' > ${DUMP_DIR}/${r}.json ;
                       done ;
                       RESOURCES_IN_NAMESPACE="componentstatuses configmaps daemonsets deployments endpoints events horizontalpodautoscalers
-                      ingresses jobs limitranges networkpolicies  persistentvolumeclaims pods podsecuritypolicies podtemplates replicasets
+                      ingresses jobs cronjobs limitranges networkpolicies persistentvolumeclaims pods podsecuritypolicies podtemplates replicasets
                       replicationcontrollers resourcequotas secrets serviceaccounts services statefulsets customresourcedefinitions
                       poddisruptionbudgets roles rolebindings";
                       for ns in $(jq -r '.items[].metadata.name' < ${DUMP_DIR}/namespaces.json);do
@@ -2875,7 +2875,7 @@ write_files:
           name: kubernetes-dashboard
           namespace: kube-system
         spec:
-          # Set replicas to 0 so that the dashboard will not start on the kubernetes cluster.         
+          # Set replicas to 0 so that the dashboard will not start on the kubernetes cluster.
           replicas: 0
           revisionHistoryLimit: 10
           selector:
