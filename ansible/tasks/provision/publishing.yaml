@@ -1,42 +1,4 @@
 ---
-# Provision an EFS instance for transformers cache
-- name: EFS instance for transformers cache
-  efs:
-    state: present
-    name: "{{ stack_name }}-transformers-cache"
-    aws_access_key: "{{ aws_access_key }}"
-    aws_secret_key: "{{ aws_secret_access_key }}"
-    region: "{{ region }}"
-    targets: 
-      - {subnet_id: "{{ private_subnet_zone_a }}", security_groups: [ "{{ efs_access_sg }}" ]}
-      - {subnet_id: "{{ private_subnet_zone_b }}", security_groups: [ "{{ efs_access_sg }}" ]}
-      - {subnet_id: "{{ private_subnet_zone_c }}", security_groups: [ "{{ efs_access_sg }}" ]}
-    tags:
-      Name: "{{ stack_name }}-transformers-cache"
-      environment: "{{ environment_type }}"
-      teamDL: "universal.publishing.platform@ft.com"
-      systemCode: "{{ platform }}"
-  register: efs_instance_trans_cache
-
-#Provision a EFS instance for factset reader
-- name: EFS instance for factset uploader
-  efs:
-    state: present
-    name: "{{ stack_name }}-factset-uploader"
-    aws_access_key: "{{ aws_access_key }}"
-    aws_secret_key: "{{ aws_secret_access_key }}"
-    region: "{{ region }}"
-    targets:
-      - {subnet_id: "{{ public_subnet_zone_a }}", security_groups: [ "{{ efs_access_sg }}" ]}
-      - {subnet_id: "{{ public_subnet_zone_b }}", security_groups: [ "{{ efs_access_sg }}" ]}
-      - {subnet_id: "{{ public_subnet_zone_c }}", security_groups: [ "{{ efs_access_sg }}" ]}
-    tags:
-      Name: "{{ stack_name }}-factset-uploader"
-      environment: "{{ environment_type }}"
-      teamDL: "universal.publishing.platform@ft.com"
-      systemCode: "{{ platform }}"
-  register: efs_instance_factset_uploader
-
 - name: Provision a persistent volume for kafka
   ec2_vol:
     aws_access_key: "{{ aws_access_key }}"
@@ -80,14 +42,6 @@
   set_fact:
     mongo_volume_info: "{{ mongo_volume_info }} + [ '{{ item.volume.zone}} => {{ item.volume_id }}' ]"
   with_items: "{{ ec2_vol_pub_mongo.results }}"
-
-- name: EFS File System ID for Transformers Cache
-  debug:
-    msg: "EFS File System ID: '{{ efs_instance_trans_cache.efs.file_system_id }}'"
-
-- name: EFS File System ID for Factset Uploader
-  debug:
-    msg: "EFS File System ID: '{{ efs_instance_factset_uploader.efs.file_system_id }}'"
 
 - name: EBS volume details for kafka
   debug:
