@@ -1,4 +1,5 @@
 aws_account_number: 070529446553
+amiId: ami-064e8c9d84377d188
 region: eu-west-1
 kms_key_arn: arn:aws:kms:eu-west-1:070529446553:key/99f50826-0102-44d5-a9dc-cd800dd204d1
 releaseChannel: stable 

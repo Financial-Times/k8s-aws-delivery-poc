@@ -23,4 +23,4 @@ tags:
   - {name: teamDL, value: universal.publishing.platform@ft.com}
   - {name: stopSchedule, value: nostop}
 
-coreos_release_channel: beta
+coreos_release_channel: alpha

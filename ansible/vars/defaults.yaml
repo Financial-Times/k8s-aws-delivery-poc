@@ -1,3 +1,4 @@
+amiId: ""
 coreos_release_channel: stable
 oidc_issuer_url: ""
 k8s_version: v1.10.11

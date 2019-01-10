@@ -13,7 +13,7 @@ releaseChannel: {{ coreos_release_channel}}
 
 # The AMI ID of CoreOS.
 # If omitted, the latest AMI for the releaseChannel is used.
-#amiId: ""
+amiId: {{ amiId }}
 
 # Container Linux has automatic updates https://coreos.com/os/docs/latest/update-strategies.html. This can be a risk in certain situations and this is why is disabled by default and you can enable it by setting this param to false.
 disableContainerLinuxAutomaticUpdates: true
