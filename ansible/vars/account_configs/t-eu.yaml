@@ -1,5 +1,5 @@
 aws_account_number: 469211898354
-amiId: ami-064e8c9d84377d188
+amiId: ami-030d1bab626c90e46
 region: eu-west-1
 kms_key_arn: arn:aws:kms:eu-west-1:469211898354:key/84c26c96-8ed3-49e2-a7f4-46bcb6263159
 releaseChannel: stable
