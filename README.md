@@ -127,13 +127,7 @@ docker run \
 
 After rotating the TLS assets, there are some **important** manual steps that should be done:
 
-1. Update locally the `CA` certificate for the API server of this cluster
-    1. Check where you have checked out the [content-k8s-auth-setup](https://github.com/Financial-Times/content-k8s-auth-setup) repository.
-    You can do this by running ```echo $KUBECONFIG```. This should point to the folder where you have the repo cloned
-    1. Create a new branch in this repository
-    1. copy the `ca.pem` from the `credentials` folder into the repository under `ca/$cluster-name`
 1. Validate that the login using the backup token works. Using the **new token** from the output, check the `kubectl-login config` on how to check this. If this validation doesn't work, there must be something wrong. Check the Troubleshooting section.
-1. Commit the new file in the `content-k8s-auth-setup`, push the branch & create a PR for it.
 1. Update the backup token access in the LP note `kubectl-login config`. You can find the new token value in the provisioner output:
         ```
         backup-access token value is: .....
@@ -195,7 +189,7 @@ Possible problems:
     1. set KUBECONFIG in the shell to point to the newly created cluster.
     1. issue some `kubectl get secret` multiple times. If this returns different values each time or there are duplicates in the secrets, it means the state of the etcds is out of sync.
     1. Check which etcd is the leader & terminate the other instances that are not
-        1. Connect to SSH to one of the etcd node using [the jumpbox & portforwarding](https://docs.google.com/document/d/1TTih1gcj-Vsqjp1aCAzsP4lpt6ivR8jDIXaZtBxNaUU/edit?pli=1#heading=h.gpl69ce0q0l3)
+        1. Connect to SSH to one of the etcd node ssh core@<ip_address>
         1. do an ```etcdctl member list```
         1. The leader would be printed in the above command.
         1. From the AWS console to and terminate the 2 instances from the cluster that are not the leader.
