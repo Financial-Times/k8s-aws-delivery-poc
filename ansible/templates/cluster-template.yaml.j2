@@ -1611,10 +1611,12 @@ experimental:
   # Enable audit log for apiserver. Recommended when `rbac` is enabled.
   auditLog:
     enabled: true
-    maxage: 1
-    logpath: "-"
-    maxBackup: 1
-    maxSize: 100
+    # In order for the audit log to be output at the STDOUT, so that it gets to journald and then to splunk,
+    # we had to remove all other audit options. We had to do it directly in the cloud-config-controller file, in the contents of the kube-apiserver.yaml
+    logpath: '-'
+#    maxBackup: 1
+#    maxSize: 100
+#    maxage: 1
 
   # See https://kubernetes.io/docs/admin/authentication/#webhook-token-authentication for more information
   authentication:

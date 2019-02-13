@@ -3005,10 +3005,7 @@ write_files:
           - --token-auth-file=/etc/kubernetes/auth/tokens.csv
           {{ end }}
           {{if .Experimental.AuditLog.Enabled}}
-          - --audit-log-maxage={{.Experimental.AuditLog.MaxAge}}
-          - --audit-log-maxsize={{.Experimental.AuditLog.MaxSize}}
-          - --audit-log-path={{.Experimental.AuditLog.LogPath}}
-          - --audit-log-maxbackup={{.Experimental.AuditLog.MaxBackup}}
+          - --audit-log-path=-
           - --audit-policy-file=/etc/kubernetes/apiserver/audit-policy.yaml
           {{ end }}
           - --authorization-mode={{if .Experimental.NodeAuthorizer.Enabled}}Node,{{end}}RBAC
@@ -4622,6 +4619,17 @@ write_files:
       apiVersion: audit.k8s.io/v1beta1
       kind: Policy
       rules:
+          # We also added manually the following that generated high volume logs.
+        - level: None
+          users:
+            - "system:serviceaccount:kube-system:default"
+            - "system:apiserver"
+            - "system:serviceaccount:default:default"
+            - "kube-worker"
+            - "system:unsecured"
+            - "system:serviceaccount:kube-system:kube-proxy"
+            - "system:serviceaccount:kube-system:heapster"
+            - "system:serviceaccount:kube-system:kube-dns"
         # The following requests were manually identified as high-volume and low-risk,
         # so drop them.
         - level: None
