@@ -346,14 +346,16 @@ controller:
         [Unit]
         Description=Restart sysctl after nf_conntrack module is loaded
         Requires=systemd-modules-load.service
+        StartLimitIntervalSec=5m
+        StartLimitBurst=3
         [Service]
         Type=simple
         # make sure nf_conntrack module is loaded
         ExecStartPre=/bin/sh -c "/usr/bin/test \"$(lsmod | grep -w nf_conntrack_ipv4 | wc -l)\" -ne \"0\""
         # Don't really know what to wait for here, so we'll sleep for 1 min before forcing sysctl to reload the config.
-        ExecStart=/bin/sh -c "/bin/sleep 60s; /bin/systemctl restart systemd-sysctl.service"
-        RestartSec=5
-        Restart=on-failure
+        ExecStart=/bin/sh -c "/bin/systemctl restart systemd-sysctl.service"
+        RestartSec=1m
+        Restart=always
 
   - name: authorized_keys.service
     command: start
@@ -757,7 +759,7 @@ worker:
 # Lower TCP established timeout, increase max connections
 # default nf_conntrack_tcp_timeout_established = 86400
 # default nf_conntrack_max = 131072
-      - path: /etc/sysctl.d/91-nf_conntrack.conf
+      - path: /etc/sysctl.d/nf_conntrack.conf
         permissions: 0644
         content: |
           net.netfilter.nf_conntrack_tcp_timeout_established=300
@@ -784,20 +786,23 @@ worker:
         command: restart
       - name: systemd-sysctl.service
         command: restart
+      
       - name: restart-sysctl-after-nf_conntrack-load.service
         command: start
         content: |
             [Unit]
             Description=Restart sysctl after nf_conntrack module is loaded
             Requires=systemd-modules-load.service
+            StartLimitIntervalSec=5m
+            StartLimitBurst=3
             [Service]
             Type=simple
             # make sure nf_conntrack module is loaded
             ExecStartPre=/bin/sh -c "/usr/bin/test \"$(lsmod | grep -w nf_conntrack_ipv4 | wc -l)\" -ne \"0\""
             # Don't really know what to wait for here, so we'll sleep for 1 min before forcing sysctl to reload the config.
-            ExecStart=/bin/sh -c "/bin/sleep 60s; /bin/systemctl restart systemd-sysctl.service"
-            RestartSec=5
-            Restart=on-failure
+            ExecStart=/bin/sh -c "/bin/systemctl restart systemd-sysctl.service"
+            RestartSec=1m
+            Restart=always
 
       - name: authorized_keys.service
         command: start
@@ -1073,14 +1078,16 @@ etcd:
         [Unit]
         Description=Restart sysctl after nf_conntrack module is loaded
         Requires=systemd-modules-load.service
+        StartLimitIntervalSec=5m
+        StartLimitBurst=3
         [Service]
         Type=simple
         # make sure nf_conntrack module is loaded
         ExecStartPre=/bin/sh -c "/usr/bin/test \"$(lsmod | grep -w nf_conntrack_ipv4 | wc -l)\" -ne \"0\""
         # Don't really know what to wait for here, so we'll sleep for 1 min before forcing sysctl to reload the config.
-        ExecStart=/bin/sh -c "/bin/sleep 60s; /bin/systemctl restart systemd-sysctl.service"
-        RestartSec=5
-        Restart=on-failure
+        ExecStart=/bin/sh -c "/bin/systemctl restart systemd-sysctl.service"
+        RestartSec=1m
+        Restart=always
 
   - name: authorized_keys.service
     command: start
