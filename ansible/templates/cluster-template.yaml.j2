@@ -352,7 +352,6 @@ controller:
         Type=simple
         # make sure nf_conntrack module is loaded
         ExecStartPre=/bin/sh -c "/usr/bin/test \"$(lsmod | grep -w nf_conntrack_ipv4 | wc -l)\" -ne \"0\""
-        # Don't really know what to wait for here, so we'll sleep for 1 min before forcing sysctl to reload the config.
         ExecStart=/bin/sh -c "/bin/systemctl restart systemd-sysctl.service"
         RestartSec=1m
         Restart=always
@@ -799,7 +798,6 @@ worker:
             Type=simple
             # make sure nf_conntrack module is loaded
             ExecStartPre=/bin/sh -c "/usr/bin/test \"$(lsmod | grep -w nf_conntrack_ipv4 | wc -l)\" -ne \"0\""
-            # Don't really know what to wait for here, so we'll sleep for 1 min before forcing sysctl to reload the config.
             ExecStart=/bin/sh -c "/bin/systemctl restart systemd-sysctl.service"
             RestartSec=1m
             Restart=always
@@ -1084,7 +1082,6 @@ etcd:
         Type=simple
         # make sure nf_conntrack module is loaded
         ExecStartPre=/bin/sh -c "/usr/bin/test \"$(lsmod | grep -w nf_conntrack_ipv4 | wc -l)\" -ne \"0\""
-        # Don't really know what to wait for here, so we'll sleep for 1 min before forcing sysctl to reload the config.
         ExecStart=/bin/sh -c "/bin/systemctl restart systemd-sysctl.service"
         RestartSec=1m
         Restart=always
