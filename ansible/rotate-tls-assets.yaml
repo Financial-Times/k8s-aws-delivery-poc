@@ -7,7 +7,6 @@
   vars_files:
     - vars/defaults.yaml
     - vars/account_configs/{{ environment_type }}-{{ aws_region }}.yaml
-    - vaults/{{ platform }}/vault_{{ environment_type }}.yaml
 
   tasks:
     - include: tasks/setup_for_kube-aws_ops.yaml
