@@ -840,9 +840,9 @@ worker:
 #      # Enable feature-gates such as:
 #      # PodPriority (it only makes sense if you enabled priority admission control in experimental section)
 #      # ExpandPersistentVolumes (it only makes sense if you enabled PersistentVolumeClaimResize admission control in experimental section)
-#      featureGates:
+      featureGates:
+       ExpandPersistentVolumes: true
 #        PodPriority: true
-#        ExpandPersistentVolumes: true
 
 # Maximum time to wait for worker creation
 #workerCreateTimeout: PT15M
@@ -1749,7 +1749,7 @@ experimental:
     # persistentVolumeClaimResize enables PersistentVolumeClaim in the API server, scheduler and kubelet. you need to manually add the
     # featureGate ExpandPersistentVolumes:true in the worker
     persistentVolumeClaimResize:
-      enabled: false
+      enabled: true
 
   # Used to provide `/etc/environment` env vars with values from arbitrary CloudFormation refs
   awsEnvironment:
